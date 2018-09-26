@@ -84,8 +84,10 @@ if grep -e "color" -e "256" <<< "$TERM" &>/dev/null; then
 	run_display() {
 		if $VERBOSE_EXTRA; then
 			while read -r line; do
-				$VERBOSE && printf "\x1B[33m|\x1B[0m %s\n" "$line"
+				printf "\x1B[33m|\x1B[0m %s\n" "$line"
 			done
+		else
+			cat - >/dev/null
 		fi
 	}
 else
