@@ -46,6 +46,7 @@ if grep -e "color" -e "256" <<< "$TERM" &>/dev/null; then
 			"inf") color='';;
 			"wrn") color='\x1B[33m';;
 			"err") color='\x1B[31m';;
+			"ist") color='\x1B[35m';;
 		esac
 
 		printf "\x1B[2m%s\x1B[0m ${color}[%s]\x1B[0m ${format}\n" "$(date +"%H:%M:%S")" "$level" "${args[@]}"
@@ -110,26 +111,44 @@ else
 	}
 fi
 
-
 # ----------------------------------------------------------------------------------------------------------------------
 # Function: create_plugin_package
 
 # Creates a plugin package.
-# This uses the PLUGIN* variables for arguments.
+# This uses the PLUGIN* and BUILD* variables for arguments.
 create_plugin_package() {
 	({
 		log inf "Creating package..."
 		local md5=''
-		local package="${PLUGIN_RELEASES}/${PLUGIN_NAME}.txz"
+		local out_package="${BUILD_ROOT}/out/${PLUGIN_NAME}.txz"
+		local out_plgfile="${BUILD_ROOT}/out/${PLUGIN_NAME}.plg"
 
 		# Create xz tarball.
-		(cd "$PLUGIN_TARGET" && run tar -vcJf "$package" *) 2> >(run_display)
+		(cd "${BUILD_ROOT}/in" && run tar --exclude='.*' -vcJf "$out_package" *) 2> >(run_display)
 
 		# Update plugin MD5.
-		md5="$(md5sum "$package" | cut -d' ' -f1)"
-		sed -e 's/\(MD5 \{1,\}\)"[a-z0-9]\{32\}"/\1'"\"$md5\"/" < "$PLUGIN_FILE" > "${PLUGIN_FILE}.tmp" && mv "${PLUGIN_FILE}.tmp" "${PLUGIN_FILE}"
+		md5="$(md5sum "$out_package" | cut -d' ' -f1)"
+		sed -e 's/\(MD5 \{1,\}\)"[^"]\{1,\}"/\1'"\"$md5\"/" < "$PLUGIN_FILE" > "$out_plgfile"
 
 		log inf "Created package with hash: %s" "$md5"
+	})
+}
+
+# ----------------------------------------------------------------------------------------------------------------------
+# Function: release_plugin_package
+
+# Releases a plugin package.
+# This uses the PLUGIN* and BUILD* variables for arguments.
+release_plugin_package() {
+	({
+		local out_package="${BUILD_ROOT}/out/${PLUGIN_NAME}.txz"
+		local out_plgfile="${BUILD_ROOT}/out/${PLUGIN_NAME}.plg"
+
+		run cp -v -- "$out_package" "$RELEASES/$(basename "$out_package")"
+		run cp -v -- "$out_plgfile" "$RELEASES/$(basename "$out_plgfile")"
+
+		log inf "Prepared %s (%s)" "${PLUGIN_NAME}" "${PLUGIN_VERSION}"
+		log ist "You need to do a git push to release the plugin."
 	})
 }
 
@@ -141,42 +160,58 @@ create_plugin_package() {
 __plugin_build() {
 	GLOBIGNORE=".:..:.DS_Store:._*";
 	PLUGIN_FILE="$(realpath "$1")"
-	PLUGIN_DIR="$(dirname "$PLUGIN_FILE")"
-	PLUGIN_NAME="$(basename "$PLUGIN_FILE" .plg)"
-	PLUGIN_TARGET="${PLUGIN_DIR}/.target/release"
+	PLUGIN_HOME="$(dirname "$PLUGIN_FILE")"
+	PLUGIN_NAME="$(grep -e 'name \{1,\}"[0-9a-zA-Z\.\-]\{1,\}"' < "$PLUGIN_FILE" | grep -o '[^"]*">$' | sed -e 's/..$//')"
 	PLUGIN_VERSION="$(grep -e 'version \{1,\}"[0-9a-z\.]\{1,\}"' < "$PLUGIN_FILE" | grep -o '[^"]*">$' | sed -e 's/..$//')"
-	PLUGIN_RELEASES="${PLUGIN_DIR}/release"
+	RELEASES="${SELF}/release"
+	BUILD_TARGET="release"
+	BUILD_ROOT="${SELF}/target/${PLUGIN_NAME}/${BUILD_TARGET}"
+	PACKAGE_ROOT="${BUILD_ROOT}/in"
+	PACKAGE_PLUGIN="${BUILD_ROOT}/in/usr/local/emhttp/plugins/${PLUGIN_NAME}"
+
+	# Safety checks.
+	if [ -z "$PLUGIN_NAME"  ]; then log err '$PLUGIN_NAME is empty.';    return 1; fi
+	if [ -z "$PLUGIN_NAME"  ]; then log err '$PLUGIN_VERSION is empty.'; return 1; fi
+	if [ -z "$BUILD_ROOT"   ]; then log err '$BUILD_ROOT is empty.';     return 1; fi
+	if [ -z "$PACKAGE_ROOT" ]; then log err '$PACKAGE_ROOT is empty.';   return 1; fi
 
 	# Check for a build script.
-	if ! [ -f "${PLUGIN_DIR}/build.sh" ]; then
+	if ! [ -f "${PLUGIN_HOME}/build.sh" ]; then
 		log err "%s: no build.sh script!" "${PLUGIN_NAME}"
 		return 255
 	fi
 
 	# Log the action.
 	printf -- '-%.0s' $(seq 1 $(tput cols))
-	printf "Building: '%s'.plg\n" "$PLUGIN_NAME"
+	printf "Building: %s.plg\n" "$PLUGIN_NAME"
 	printf "Version:  %s\n\n" "$PLUGIN_VERSION"
 
-	# Create the target and release directories.
-	[ -d "$PLUGIN_TARGET" ]   || mkdir -p "$PLUGIN_TARGET"
-	[ -d "$PLUGIN_RELEASES" ] || mkdir -p "$PLUGIN_RELEASES"
+	# Create the build directories.
+	$CLEAN && rm -rf "$BUILD_ROOT"
+	[ -d "$BUILD_ROOT" ]       || mkdir -p "$BUILD_ROOT"
+	[ -d "${BUILD_ROOT}/in" ]  || mkdir -p "${BUILD_ROOT}/in"
+	[ -d "${BUILD_ROOT}/out" ] || mkdir -p "${BUILD_ROOT}/out"
+	[ -d "$PACKAGE_PLUGIN" ]   || mkdir -p "$PACKAGE_PLUGIN"
+	[ -d "$RELEASES" ]         || mkdir -p "$RELEASES"
 
 	# Run the build script.
 	LOG_PREFIX="$(rev <<< "$PLUGIN_NAME" | cut -d'.' -f1 | rev): "
-	(shopt -u dotglob; source "${PLUGIN_DIR}/build.sh")
+	(shopt -u dotglob; source "${PLUGIN_HOME}/build.sh")
 	LOG_PREFIX=""
 }
 
 # ----------------------------------------------------------------------------------------------------------------------
 # Main: (Arguments)
+SELF="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
 VERBOSE=false
 VERBOSE_EXTRA=false
+CLEAN=false
 while true; do
 	case "$1" in
 		"--")                    shift; break;;
 		"-v"|"--verbose")        shift; VERBOSE=true;;
 		"-vv"|"--extra-verbose") shift; VERBOSE=true; VERBOSE_EXTRA=true;;
+		"-c"|"--clean")          shift; CLEAN=true;;
 		"-"*)                    echo "Unknown argument: $1"; exit 255;;
 		""|*)                    break;;
 	esac
@@ -184,9 +219,8 @@ done
 
 # ----------------------------------------------------------------------------------------------------------------------
 # Main: (Changed Plugins)
-# Automatic detection:
 if [ $# -eq 0 ]; then
-	for plugin in "$(dirname "${BASH_SOURCE[0]}")"/*/*.plg; do
+	for plugin in "$(dirname "${BASH_SOURCE[0]}")"/source/*/manifest.plg; do
 		if [ -n "$(git status --porcelain "$(dirname "$plugin")")" ]; then
 			__plugin_build "$plugin"
 		fi
@@ -196,10 +230,10 @@ fi
 # ----------------------------------------------------------------------------------------------------------------------
 # Main: (Manual)
 for plugin in "$@"; do
-	if ! [ -e "$(dirname "${BASH_SOURCE[0]}")/${plugin}"/*.plg ]; then
+	if ! [ -e "$(dirname "${BASH_SOURCE[0]}")/source/${plugin}"/manifest.plg ]; then
 		log err "package.sh: unknown plugin '%s'" "$plugin"
 		continue
 	fi
 
-	__plugin_build "$plugin"/*.plg
+	__plugin_build "$(dirname "${BASH_SOURCE[0]}")/source/${plugin}/manifest.plg"
 done

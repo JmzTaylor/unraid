@@ -13,18 +13,13 @@ if [ -z "${BASH_SOURCE[1]}" ]; then
 	exit 1
 fi
 
-
-# ----------------------------------------------------------------------------------------------------------------------
-# Clear Files:
-log inf "Removing files..."
-run rm -rv "$PLUGIN_TARGET"/*
-
 # ----------------------------------------------------------------------------------------------------------------------
 # Copy Files:
 
 log inf "Copying files..."
-run cp -rv "${PLUGIN_DIR}/res"/* "${PLUGIN_TARGET}/"
+run cp -rv "${PLUGIN_HOME}"/plugin/* "${PACKAGE_PLUGIN}/"
 
 # ----------------------------------------------------------------------------------------------------------------------
-# Package Files:
+# Release:
 create_plugin_package
+release_plugin_package
