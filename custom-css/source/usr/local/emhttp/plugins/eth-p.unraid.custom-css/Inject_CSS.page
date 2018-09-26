@@ -1,0 +1,10 @@
+Menu="Buttons:1"
+Link="nav-user"
+---
+<?php
+/**
+ * Copyright (C) 2018 Ethan P. (eth-p)
+ */
+?>
+
+<link rel="stylesheet" href="/plugins/eth-p.unraid.custom-css/include/style.php" />
