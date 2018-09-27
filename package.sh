@@ -29,13 +29,18 @@
 }
 
 # ----------------------------------------------------------------------------------------------------------------------
+# Variables
+
+COLOR="$(grep -e "color" -e "256" <<< "$TERM" &>/dev/null && echo "true" || echo "false")"
+
+# ----------------------------------------------------------------------------------------------------------------------
 # Function: log
 
 # Logs a message.
 # $1: ["inf"|"wrn"|"err"] The message level.
 # $2: [String] The format string.
 # ... [String] The format arguments.
-if grep -e "color" -e "256" <<< "$TERM" &>/dev/null; then
+if "$COLOR"; then
 	log() {
 		local level="$1"
 		local format="${LOG_PREFIX}$2"
@@ -48,6 +53,7 @@ if grep -e "color" -e "256" <<< "$TERM" &>/dev/null; then
 			"err") color='\x1B[31m';;
 			"ist") color='\x1B[35m';;
 			"bld") color='\x1B[36m';;
+			"fin") color='\x1B[32m';;
 		esac
 
 		printf "\x1B[2m%s\x1B[0m ${color}[%s]\x1B[0m ${format}\n" "$(date +"%H:%M:%S")" "$level" "${args[@]}"
@@ -68,18 +74,42 @@ fi
 # Runs a command.
 # $1: [String] The command.
 # ... [String] The command arguments.
-if grep -e "color" -e "256" <<< "$TERM" &>/dev/null; then
-	run() {
-		local command="$1"
-		local args=("${@:2}")
+run() {
+	local command="$1"
+	local args=("${@:2}")
 
+	run_display_args "$@"
+
+	"$command" "${args[@]}" 2> >(run_display_err) 1> >(run_display_out)
+	local result=$?
+
+	if [ $result -ne 0 ]; then
+		exit $result
+	fi
+
+	return $result
+}
+
+# Runs a command, not caring if it fails.
+# $1: [String] The command.
+# ... [String] The command arguments.
+run_c() {
+	local command="$1"
+	local args=("${@:2}")
+
+	run_display_args "$@"
+
+	"$command" "${args[@]}" 2> >(run_display_err) 1> >(run_display_out)
+	return $?
+}
+
+if "$COLOR"; then
+	run_display_args() {
 		if $VERBOSE; then
-			printf "\x1B[34m\$ %s\x1B[0m" "$command"
-			printf " %q" "${args[@]}"
+			printf "\x1B[34m\$ %s\x1B[0m" "$1"
+			printf " %q" "${@:2}"
 			printf "\n"
 		fi
-
-		"$command" "${args[@]}" 2> >(run_display_err) 1> >(run_display_out)
 	}
 
 	run_display_err() {
@@ -98,17 +128,10 @@ if grep -e "color" -e "256" <<< "$TERM" &>/dev/null; then
 		fi
 	}
 else
-	run() {
-		local command="$1"
-		local args=("${@:2}")
-
+	run_display_args() {
 		if $VERBOSE; then
-			printf "$ %s" "$command"
-			printf " %q" "${args[@]}"
-			printf "\n"
+			echo "$@"
 		fi
-
-		"$command" "${args[@]}" 2> >(run_display_err) 1> >(run_display_out)
 	}
 
 	run_display_err() {
@@ -133,13 +156,13 @@ fi
 # This uses the PLUGIN* and BUILD* variables for arguments.
 create_plugin_package() {
 	({
-		log inf "Creating package..."
+		log bld "Creating package..."
 		local md5=''
 		local out_package="${BUILD_ROOT}/out/${PLUGIN_NAME}.txz"
 		local out_plgfile="${BUILD_ROOT}/out/${PLUGIN_NAME}.plg"
 
 		# Create xz tarball.
-		(cd "${BUILD_ROOT}/in" && run tar --exclude='.*' -vcJf "$out_package" *) 2> >(run_display_out)
+		(cd "${BUILD_ROOT}/in" && run tar --exclude='.*' -vcJf "$out_package" *)
 
 		# Update plugin MD5.
 		md5="$(md5sum "$out_package" | cut -d' ' -f1)"
@@ -162,8 +185,8 @@ release_plugin_package() {
 		run cp -v -- "$out_package" "$RELEASES/$(basename "$out_package")"
 		run cp -v -- "$out_plgfile" "$RELEASES/$(basename "$out_plgfile")"
 
-		log inf "Prepared %s (%s)" "${PLUGIN_NAME}" "${PLUGIN_VERSION}"
-		log ist "You need to do a git push to release the plugin."
+		log fin "Prepared %s (%s)" "${PLUGIN_NAME}" "${PLUGIN_VERSION}"
+		log fin "You need to do a git push to release the plugin."
 	})
 }
 
@@ -221,7 +244,17 @@ __plugin_build() {
 	# Run the build script.
 	LOG_PREFIX="$(rev <<< "$PLUGIN_NAME" | cut -d'.' -f1 | rev): "
 	(shopt -u dotglob; source "${PLUGIN_HOME}/build.sh")
+	local result=$?
 	LOG_PREFIX=""
+
+	# Handle the result.
+	if [ $result -ne 0 ]; then
+		$COLOR && printf "\n\x1B[31mBuild Failed.\x1B[0m\n"
+		$COLOR || printf "\nBuild Failed.\n"
+	fi
+
+	printf -- '-%.0s' $(seq 1 $(tput cols))
+	return $result
 }
 
 # ----------------------------------------------------------------------------------------------------------------------
@@ -253,11 +286,25 @@ fi
 
 # ----------------------------------------------------------------------------------------------------------------------
 # Main: (Manual)
-for plugin in "$@"; do
+plugins=("$@")
+
+if [ "${plugins[0]}" = "*" ]; then
+	plugins=("$(dirname "${BASH_SOURCE[0]}")/source"/*)
+
+	for index in $(seq 0 $((${#plugins[@]} - 1))); do
+		plugins[index]="$(basename "${plugins[index]}")"
+	done
+fi
+
+for plugin in "${plugins[@]}"; do
 	if ! [ -e "$(dirname "${BASH_SOURCE[0]}")/source/${plugin}"/manifest.plg ]; then
 		log err "package.sh: unknown plugin '%s'" "$plugin"
 		continue
 	fi
 
 	__plugin_build "$(dirname "${BASH_SOURCE[0]}")/source/${plugin}/manifest.plg"
+	result=$?
+	if [ $result -ne 0 ]; then
+		exit $result
+	fi
 done
