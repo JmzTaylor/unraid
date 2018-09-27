@@ -7,8 +7,13 @@
 //       The main application class for chimera.
 // ---------------------------------------------------------------------------------------------------------------------
 #pragma once
+
+#include <string>
+
 #include <cxxopts.hpp>
-#include <sass.h>
+
+#include "Unraid.hpp"
+
 
 namespace chimera {
 	class App {
@@ -18,13 +23,18 @@ namespace chimera {
 
 		public:
 
+			// ----- Fields -----
+
 			/**
 			 * The parsed app options.
 			 */
 			cxxopts::ParseResult* options = nullptr;
 
+			// ----- Constructor / Destructor -----
+
 			/**
 			 * Constructor.
+			 *
 			 * @param argc The number of arguments.
 			 * @param argv The array of arguments.
 			 */
@@ -35,18 +45,33 @@ namespace chimera {
 			 */
 			~App();
 
-
 			// ----- Info Functions -----
 
 			/**
 			 * Show command help.
 			 */
-			void show_help();
+			void showHelp() const;
 
 			/**
 			 * Show the command version.
 			 */
-			void show_version();
+			void showVersion() const;
+
+			// ----- Getters -----
+
+			/**
+			 * Gets the Chimera version.
+			 * @return The version string.
+			 */
+			const std::string getVersion() const;
+
+			/**
+			 * Gets the Unraid info and settings object.
+			 * This is lazily loaded.
+			 *
+			 * @return The Unraid info and settings object.
+			 */
+			Unraid& getUnraid();
 
 	};
 }

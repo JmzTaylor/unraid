@@ -19,7 +19,8 @@ COMPILER_MACROS=
 
 LIB_HEADERS=lib/libsass/include \
             lib/libsemver/include \
-            lib/cxxopts/include
+            lib/cxxopts/include \
+            lib/json/include
 
 LIB_PATHS=lib/libsass/lib \
           lib/libsemver/src
@@ -50,8 +51,6 @@ SOURCES=$(wildcard $(SRC_DIR)/*.cpp)
 MAIN=$(filter %/main.cpp,$(SOURCES))
 OBJECTS=$(addprefix $(OBJ_DIR)/,$(patsubst %.cpp,%.o,$(SOURCES)))
 
-$(info [$(OBJECTS)])
-
 # ----------------------------------------------------------------------------------------------------------------------
 # Targets:
 
@@ -61,7 +60,7 @@ $(info [$(OBJECTS)])
 # From *.cpp --> *.o
 $(OBJ_DIR)/%.o : %.cpp
 	@ mkdir -p $(dir $@)
-	$(CXX) $(COMPILER_WARN) -c $(CXXFLAGS) $(LDFLAGS) \
+	$(CXX) $(COMPILER_WARN) -c $(CXXFLAGS) $(CXXFLAGS_EXTERNAL) $(LDFLAGS) \
 		$(foreach m,$(COMPILER_MACROS),-D$m) \
 		$(foreach m,$(filter MACRO_%,$(.VARIABLES)),-D$(patsubst MACRO_%,%,$m)=\"$($(m))\") \
 		$< -o $@

@@ -7,3 +7,6 @@
 [submodule "source/chimera/chimera/lib/cxxopts"]
 	path = source/chimera/chimera/lib/cxxopts
 	url = https://github.com/jarro2783/cxxopts.git
+[submodule "source/chimera/chimera/lib/json"]
+	path = source/chimera/chimera/lib/json
+	url = https://github.com/nlohmann/json.git

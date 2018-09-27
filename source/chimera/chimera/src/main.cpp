@@ -3,10 +3,11 @@
 // Unraid's most powerful hybrid theme manager.
 //
 // Tool: chimera
-// File: src/compiler.cpp
-//       TODO docs
+// File: src/main.cpp
+//       The entry point for chimera.
 // ---------------------------------------------------------------------------------------------------------------------
 #include "App.hpp"
+
 
 int main(int argc, char** argv) {
 	chimera::App app(argc, argv);
@@ -15,7 +16,7 @@ int main(int argc, char** argv) {
 	// Argument: --help
 	// -----------------------
 	if (app.options->count("help")) {
-		std::cout << "TODO: Help" << std::endl;
+		app.showHelp();
 		return 0;
 	}
 
@@ -23,12 +24,7 @@ int main(int argc, char** argv) {
 	// Argument: --version
 	// -----------------------
 	if (app.options->count("version")) {
-		std::cout
-			<< "chimera " << APP_VERSION << " (libsass " << libsass_version() << ")" << std::endl
-			<< std::endl
-			<< "Licenses: " << URL_LICENSES << std::endl
-			<< "GitHub:   " << URL_GITHUB << std::endl
-			<< "GitLab:   " << URL_GITLAB << std::endl;
+		app.showVersion();
 		return 0;
 	}
 

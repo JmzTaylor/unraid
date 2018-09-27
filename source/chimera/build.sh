@@ -71,7 +71,17 @@ log bld "Building binary 'chimera'..."
 ({
 	cd "${CHIMERA_TOOL}"
 
+	opts=()
+
+	# Clang-specific arguments.
+	if g++ 2>&1 | grep clang &>/dev/null; then
+		if "$COLOR"; then
+			opts+=(-Xclang -fcolor-diagnostics)
+		fi
+	fi
+
 	run make \
+		CXXFLAGS_EXTERNAL="${opts[*]}" \
 		BIN_DIR="${BUILD_ROOT}/bin" \
 		OBJ_DIR="${BUILD_ROOT}/obj" \
 		MACRO_APP_VERSION="${PLUGIN_VERSION}" \
