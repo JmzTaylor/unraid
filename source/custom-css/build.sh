@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 # ----------------------------------------------------------------------------------------------------------------------
-# https://github.com/eth-p/unraid/tree/master/custom-css | Copyright (C) 2018 Ethan P. (eth-p)
+# https://github.com/eth-p/unraid/tree/master/source/custom-css | Copyright (C) 2018 Ethan P. (eth-p)
 # A plugin for easily adding persistent custom styles to Unraid.
 #
-# File: custom-css/build.sh
+# File: build.sh
 #       Build script for the custom-css plugin.
 # ----------------------------------------------------------------------------------------------------------------------
 if [ -z "${BASH_SOURCE[1]}" ]; then
@@ -16,7 +16,7 @@ fi
 # ----------------------------------------------------------------------------------------------------------------------
 # Copy Files:
 
-log inf "Copying files..."
+log bld "Copying files..."
 run cp -rv "${PLUGIN_HOME}"/plugin/* "${PACKAGE_PLUGIN}/"
 
 # ----------------------------------------------------------------------------------------------------------------------

@@ -47,6 +47,7 @@ if grep -e "color" -e "256" <<< "$TERM" &>/dev/null; then
 			"wrn") color='\x1B[33m';;
 			"err") color='\x1B[31m';;
 			"ist") color='\x1B[35m';;
+			"bld") color='\x1B[36m';;
 		esac
 
 		printf "\x1B[2m%s\x1B[0m ${color}[%s]\x1B[0m ${format}\n" "$(date +"%H:%M:%S")" "$level" "${args[@]}"
@@ -78,10 +79,16 @@ if grep -e "color" -e "256" <<< "$TERM" &>/dev/null; then
 			printf "\n"
 		fi
 
-		"$command" "${args[@]}" | run_display
+		"$command" "${args[@]}" 2> >(run_display_err) 1> >(run_display_out)
 	}
 
-	run_display() {
+	run_display_err() {
+		while read -r line; do
+			printf "\x1B[31m|\x1B[0m %s\n" "$line"
+		done
+	}
+
+	run_display_out() {
 		if $VERBOSE_EXTRA; then
 			while read -r line; do
 				printf "\x1B[33m|\x1B[0m %s\n" "$line"
@@ -101,13 +108,19 @@ else
 			printf "\n"
 		fi
 
-		"$command" "${args[@]}" | run_display
+		"$command" "${args[@]}" 2> >(run_display_err) 1> >(run_display_out)
 	}
 
-	run_display() {
+	run_display_err() {
+		while read -r line; do
+			printf "! %s\n" "$line"
+		done
+	}
+
+	run_display_out() {
 		if $VERBOSE_EXTRA; then
 			while read -r line; do
-				$VERBOSE && printf "\x1B[33m|\x1B[0m %s\n" "$line"
+				$VERBOSE && printf "| %s\n" "$line"
 			done
 		fi
 	}
@@ -126,7 +139,7 @@ create_plugin_package() {
 		local out_plgfile="${BUILD_ROOT}/out/${PLUGIN_NAME}.plg"
 
 		# Create xz tarball.
-		(cd "${BUILD_ROOT}/in" && run tar --exclude='.*' -vcJf "$out_package" *) 2> >(run_display)
+		(cd "${BUILD_ROOT}/in" && run tar --exclude='.*' -vcJf "$out_package" *) 2> >(run_display_out)
 
 		# Update plugin MD5.
 		md5="$(md5sum "$out_package" | cut -d' ' -f1)"
@@ -152,6 +165,16 @@ release_plugin_package() {
 		log inf "Prepared %s (%s)" "${PLUGIN_NAME}" "${PLUGIN_VERSION}"
 		log ist "You need to do a git push to release the plugin."
 	})
+}
+
+# ----------------------------------------------------------------------------------------------------------------------
+# Function: patch_list_files
+
+# Lists modified files in one or more patches.
+# $1: [String] The patch file.
+# ... [String] ...
+patch_list_files() {
+	cat "$@" | grep "+++\|---" | sed 's/[+\-]\{3\} [a|b]\/\(.*\)$/\1/' | uniq
 }
 
 # ----------------------------------------------------------------------------------------------------------------------
@@ -191,7 +214,6 @@ __plugin_build() {
 	# Create the build directories.
 	$CLEAN && rm -rf "$BUILD_ROOT"
 	[ -d "$BUILD_ROOT" ]       || mkdir -p "$BUILD_ROOT"
-	[ -d "${BUILD_ROOT}/in" ]  || mkdir -p "${BUILD_ROOT}/in"
 	[ -d "${BUILD_ROOT}/out" ] || mkdir -p "${BUILD_ROOT}/out"
 	[ -d "$PACKAGE_PLUGIN" ]   || mkdir -p "$PACKAGE_PLUGIN"
 	[ -d "$RELEASES" ]         || mkdir -p "$RELEASES"
