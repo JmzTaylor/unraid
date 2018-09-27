@@ -1,0 +1,9 @@
+[submodule "source/chimera/chimera/lib/libsass"]
+	path = source/chimera/chimera/lib/libsass
+	url = https://github.com/sass/libsass.git
+[submodule "source/chimera/chimera/lib/semver"]
+	path = source/chimera/chimera/lib/libsemver
+	url = https://github.com/zmarko/semver.git
+[submodule "source/chimera/chimera/lib/cxxopts"]
+	path = source/chimera/chimera/lib/cxxopts
+	url = https://github.com/jarro2783/cxxopts.git

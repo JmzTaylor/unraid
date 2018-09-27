@@ -1,0 +1,28 @@
+diff --git a/include/cxxopts.hpp b/include/cxxopts.hpp
+index 1ef1e15..1b1bdb2 100644
+--- a/include/cxxopts.hpp
++++ b/include/cxxopts.hpp
+@@ -1215,6 +1215,9 @@ namespace cxxopts
+     ParseResult
+     parse(int& argc, char**& argv);
+ 
++    ParseResult*
++    parse_to_heap(int& argc, char**& argv);
++
+     OptionAdder
+     add_options(std::string group = "");
+ 
+@@ -1645,6 +1648,13 @@ Options::parse(int& argc, char**& argv)
+   return result;
+ }
+ 
++inline
++ParseResult*
++Options::parse_to_heap(int& argc, char**& argv)
++{
++  return new ParseResult(m_options, m_positional, argc, argv);
++}
++
+ inline
+ void
+ ParseResult::parse(int& argc, char**& argv)

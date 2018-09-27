@@ -1,0 +1,68 @@
+<?xml version='1.0' standalone='yes'?>
+
+<!DOCTYPE PLUGIN [
+<!ENTITY name      "eth-p.unraid.chimera">
+<!ENTITY author    "eth-p">
+<!ENTITY version   "2018.09.25">
+<!ENTITY pluginURL "https://raw.githubusercontent.com/eth-p/unraid/master/release/&name;.plg">
+<!ENTITY source    "/boot/config/plugins/&name;/&name;">
+<!ENTITY MD5       "--[REPLACE ME]--">
+]>
+
+<PLUGIN name="&name;" author="&author;" version="&version;" pluginURL="&pluginURL;" min="6.1.9">
+
+<CHANGES>
+##&name;
+
+###&version;
+- Initial public release.
+</CHANGES>
+
+<!--
+Copyright (C) 2018 Ethan P. (eth-p)
+Unraid's most powerful hybrid theme manager.
+-->
+
+<!-- PRE-INSTALL SCRIPT -->
+<FILE Run="/bin/bash">
+<INLINE>
+# Remove old 'source' packages
+MD5=$(md5sum &source;.txz 2>/dev/null|grep -Po '^\S+')
+if [[ $MD5 != &MD5; ]]; then
+  rm -f &source;*.txz
+fi
+</INLINE>
+</FILE>
+
+<!-- SOURCE PACKAGE -->
+<FILE Name="&source;.txz" Run="upgradepkg --install-new --reinstall">
+<URL>https://github.com/eth-p/unraid/blob/master/release/&name;.txz?raw=true</URL>
+<MD5>&MD5;</MD5>
+</FILE>
+
+<!-- POST-INSTALL SCRIPT -->
+<FILE Run="/bin/bash">
+<INLINE>
+echo ""
+echo "-----------------------------------------------------------"
+echo " Plugin &name; is installed."
+echo " This plugin requires Dynamix webGui to operate"
+echo " Copyright 2018, Ethan P. (eth-p)"
+echo " Version: &version;"
+echo "-----------------------------------------------------------"
+echo ""
+
+# Ensure custom.css exists.
+mkdir -p "/boot/config/plugins/&name;" 2>/dev/null
+touch "/boot/config/plugins/&name;/custom.css" >/dev/null
+</INLINE>
+</FILE>
+
+<!-- REMOVE SCRIPT -->
+<FILE Run="/bin/bash" Method="remove">
+<INLINE>
+removepkg &name;
+</INLINE>
+</FILE>
+
+</PLUGIN>
