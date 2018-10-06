@@ -12,9 +12,10 @@
 #include <sass.h>
 
 #include "App.hpp"
-
-
-// ----- Constructor / Destructor -----
+#include "Compiler.hpp"
+#include "util/StringUtil.hpp" // FIXME: Debug
+// ---------------------------------------------------------------------------------------------------------------------
+// ----- Constructors / Destructors -----
 
 chimera::App::App(int argc, char** argv) {
 	this->opts = new cxxopts::Options(argv[0], "The chimera sass compiler.");
@@ -26,14 +27,15 @@ chimera::App::App(int argc, char** argv) {
 
 	// Sass/SCSS Options:
 	this->opts->add_options("sass")
-		("o,output", "Specify the output file.", cxxopts::value<std::string>())
-		("m,minify", "Minify the output CSS.",   cxxopts::value<bool>());
+		("o,output",    "Specify the output file.",            cxxopts::value<std::string>())
+		("m,minify",    "Minify the output.",                  cxxopts::value<bool>())
+		("s,sourcemap", "Include a sourcemap in the output.",  cxxopts::value<bool>());
 
 	// Chimera Options:
 	this->opts->add_options("chimera compiler")
-		("unraid-version",  "Set the Unraid version variable.", cxxopts::value<std::string>())
-		("unraid-theme",    "Set the Unraid theme variable.",   cxxopts::value<std::string>())
-		("var",             "Set a SASS variable.",             cxxopts::value<std::vector<std::string>>());
+		("unraid-version",  "Set the Unraid version variable.",         cxxopts::value<std::string>())
+		("unraid-theme",    "Set the Unraid theme variable.",           cxxopts::value<std::string>())
+		("var",             "Set a SASS variable in key:value format.", cxxopts::value<std::vector<std::string>>());
 
 	this->opts->add_options("chimera theme")
 		("show-theme-options",   "Show the options available in the theme.",    cxxopts::value<std::string>())
@@ -45,6 +47,14 @@ chimera::App::App(int argc, char** argv) {
 
 	// Parse.
 	this->options = this->opts->parse_to_heap(argc, argv);
+
+	// FIXME: DEBUG START
+	std::string alpha = "foo/bar";
+	std::list<std::string> list = split<std::list>(alpha, "/");
+	std::cout << "First:  " << list.front() << std::endl;
+	std::string beta = join(list, "/");
+	std::cout << "Joined: " << beta << std::endl;
+	// FIXME: DEBUG END
 }
 
 chimera::App::~App() {

@@ -6,7 +6,6 @@
 // File: src/sassfn/unraid_version.cpp
 //       Binding and implementation of the `unraid-version()` sass function.
 // ---------------------------------------------------------------------------------------------------------------------
-#pragma once
 #include <sass.h>
 #include "../Theme.hpp"
 

@@ -10,8 +10,8 @@
 # Options:
 
 COMPILER_O=
-COMPILER_STD=-std=c++14
-COMPILER_WARN=-Wall -Werror -Wno-unused-command-line-argument
+COMPILER_STD=-std=c++17
+COMPILER_WARN=-Wall -Werror -Wno-unused-command-line-argument -Wfatal-errors
 COMPILER_MACROS=
 
 # ----------------------------------------------------------------------------------------------------------------------
@@ -47,7 +47,7 @@ OBJ_DIR=/dev/null
 # Files:
 
 NAME=$(notdir $(realpath .))
-SOURCES=$(wildcard $(SRC_DIR)/*.cpp)
+SOURCES=$(shell find $(SRC_DIR) -name '*.cpp')
 MAIN=$(filter %/main.cpp,$(SOURCES))
 OBJECTS=$(addprefix $(OBJ_DIR)/,$(patsubst %.cpp,%.o,$(SOURCES)))
 
@@ -68,7 +68,7 @@ $(OBJ_DIR)/%.o : %.cpp
 # From *.o --> executable
 $(BIN_DIR)/$(NAME) : $(OBJECTS)
 	@ mkdir -p $(BIN_DIR)
-	$(CXX) $^ $(LDFLAGS) $(LDLIBS) -o $@
+	$(CXX) $(shell lorder $^ | tsort) $(LDFLAGS) $(LDLIBS) -o $@
 
 # Aliases.
 $(NAME): $(BIN_DIR)/$(NAME)

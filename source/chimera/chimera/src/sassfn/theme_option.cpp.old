@@ -6,7 +6,6 @@
 // File: src/sassfn/theme_option.cpp
 //       Binding and implementation of the `theme-option()` sass function.
 // ---------------------------------------------------------------------------------------------------------------------
-#pragma once
 #include <sass.h>
 #include "../Theme.hpp"
 
@@ -20,6 +19,7 @@ namespace sassfn {
 		Theme* theme = static_cast<Theme*>(sass_function_get_cookie(cb));
 		theme->getApp()->getUnraid()->getVersion();
 
+		return sass_make_string();
 	}
 
 }

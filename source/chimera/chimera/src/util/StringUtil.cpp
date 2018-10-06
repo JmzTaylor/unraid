@@ -3,7 +3,7 @@
 // Unraid's most powerful hybrid theme manager.
 //
 // Tool: chimera
-// File: src/ThemeCompiler.cpp
-//       A wrapper for libsass used to compile chimera themes.
+// File: src/path/StringUtil.hpp
+//       Various utility functions for working with strings.
 // ---------------------------------------------------------------------------------------------------------------------
-#include "ThemeCompiler.hpp"
+// Nothing here. Blame the templates!
