@@ -26,10 +26,10 @@ run cp -rv "${PLUGIN_HOME}"/plugin/* "${PACKAGE_PLUGIN}/"
 # ----------------------------------------------------------------------------------------------------------------------
 # Compile Library: libsass
 
-log bld "Building library 'libsass'..."
+log bld "Building library 'sass'..."
 
 ({
-	cd "${CHIMERA_TOOL}/lib/libsass/"
+	cd "${CHIMERA_TOOL}/lib/sass/"
 	export BUILD=static
 	run make -j4
 })
@@ -37,14 +37,14 @@ log bld "Building library 'libsass'..."
 # ----------------------------------------------------------------------------------------------------------------------
 # Compile Library: libsemver
 
-log bld "Building library 'libsemver'..."
+log bld "Building library 'semver'..."
 
 ({
-	cd "${CHIMERA_TOOL}/lib/libsemver/"
+	cd "${CHIMERA_TOOL}/lib/semver/"
 
 	# Patch the CMakeLists.txt
 	run git checkout head -- CMakeLists.txt
-	run git apply "${CHIMERA_TOOL}/lib-patch/libsemver"/*.patch
+	run git apply "${CHIMERA_TOOL}/lib-patch/semver"/*.patch
 
 	[ -f 'Makefile' ]        || run cmake .
 	[ -f 'src/libsemver.a' ] || run make -j4
@@ -59,7 +59,7 @@ log bld "Building library 'fmt'..."
 	cd "${CHIMERA_TOOL}/lib/fmt/"
 	export BUILD=static
 	[ -f 'Makefile' ] || run cmake .
-	[ -f 'libfmt.a' ] || run make
+	[ -f 'libfmt.a' ] || run make -j4
 })
 
 # ----------------------------------------------------------------------------------------------------------------------
