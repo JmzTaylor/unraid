@@ -10,3 +10,6 @@
 [submodule "source/chimera/chimera/lib/json"]
 	path = source/chimera/chimera/lib/json
 	url = https://github.com/nlohmann/json.git
+[submodule "source/chimera/chimera/lib/fmt"]
+	path = source/chimera/chimera/lib/fmt
+	url = https://github.com/fmtlib/fmt.git

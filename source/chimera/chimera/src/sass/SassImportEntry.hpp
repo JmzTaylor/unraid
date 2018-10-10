@@ -3,51 +3,79 @@
 // Unraid's most powerful hybrid theme manager.
 //
 // Tool: chimera
-// File: src/sass/SassImporter.hpp
-//       An abstract class which wraps the sass importer API.
+// File: src/sass/SassImportEntry.hpp
+//       A class which wraps the sass import entry object.
 // ---------------------------------------------------------------------------------------------------------------------
 #pragma once
 
+// Includes: Stdlib
+#include <iostream>
+#include <optional>
 #include <string>
 
+// Includes: Library
 #include <sass.h>
-
-#include "SassImportEntry.hpp"
-
+// ---------------------------------------------------------------------------------------------------------------------
 
 namespace chimera::sass {
-	class SassImporter {
+	class SassImportEntry {
 		protected:
 
-			// ----- API -----
-
-			/**
-			 * A virtual function for resolving imports from a path.
-			 *
-			 * @param parent The parent path.
-			 * @param path The requested path.
-			 *
-			 * @returns A vector of files to import.
-			 */
-			virtual void import(std::string path, std::string parent, std::vector<chimera::sass::SassImportEntry>& files) = 0;
-
-			// ----- Implementation -----
-
-			/**
-			 * A wrapper around the sass importer feature.
-			 * https://github.com/sass/libsass/blob/master/docs/api-importer.md
-			 */
-			Sass_Import_List sass_importer(const char* path, Sass_Importer_Entry cb, struct Sass_Compiler* comp);
+			const std::string& file;
+			std::optional<std::string> contents;
 
 		public:
 
+			// ----- Constructors / Destructors -----
+
+			/**
+			 * Creates an import entry from a file path.
+			 * This will leave libsass to handle loading the file from its path.
+			 *
+			 * @param file The path to the imported file.
+			 */
+			SassImportEntry(const std::string& file);
+
+			/**
+			 * Creates an import entry from an arbitrary file path and a string.
+			 *
+			 * @param file The "path" to the imported file. This can be anything.
+			 * @param contents The contents of the imported file.
+			 */
+			SassImportEntry(const std::string& file, const std::string& contents);
+
+			/**
+			 * Creates an import entry from an arbitrary file path and an input stream.
+			 * The input stream will immediate be consumed.
+			 *
+			 * @param file The "path" to the imported file. This can be anything.
+			 * @param stream A input stream for the contents of the imported file.
+			 */
+			SassImportEntry(const std::string& file, std::istream& stream);
+
+
+			// ----- Getters -----
+
+			/**
+			 * Gets the path of the imported file.
+			 * @return The path of the imported file.
+			 */
+			const std::string& getFile() const;
+
+			/**
+			 * Gets the contents of the imported file.
+			 * @return The file contents, or nothing if the file is to be loaded by liblass.
+			 */
+			const std::optional<const std::string> getContents() const;
+
+
 			// ----- API -----
 
 			/**
-			 * Creates a new libsass Sass_Importer_Entry object from this.
+			 * Creates a new libsass Sass_Import_Entry object from this.
 			 * This object's lifetime must either be managed manually, or have its ownership given to libsass.
 			 */
-			Sass_Importer_Entry newSass();
+			Sass_Import_Entry newSass() const;
 
 	};
 }

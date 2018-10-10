@@ -8,12 +8,13 @@
 // ---------------------------------------------------------------------------------------------------------------------
 #pragma once
 
+// Includes: Stdlib
 #include <string>
 #include <vector>
 
+// Includes: Library
 #include <sass.h>
-
-
+// ---------------------------------------------------------------------------------------------------------------------
 namespace chimera {
 	class Unraid {
 		protected:
@@ -23,7 +24,6 @@ namespace chimera {
 		public:
 
 			// ----- Getters -----
-
 
 			/**
 			 * Gets the version of the running Unraid instance.

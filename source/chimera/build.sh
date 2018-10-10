@@ -35,7 +35,7 @@ log bld "Building library 'libsass'..."
 })
 
 # ----------------------------------------------------------------------------------------------------------------------
-# Compile Library: semver
+# Compile Library: libsemver
 
 log bld "Building library 'libsemver'..."
 
@@ -46,8 +46,20 @@ log bld "Building library 'libsemver'..."
 	run git checkout head -- CMakeLists.txt
 	run git apply "${CHIMERA_TOOL}/lib-patch/libsemver"/*.patch
 
-	run cmake .
-	run make -j4
+	[ -f 'Makefile' ]        || run cmake .
+	[ -f 'src/libsemver.a' ] || run make -j4
+})
+
+# ----------------------------------------------------------------------------------------------------------------------
+# Compile Library: fmt
+
+log bld "Building library 'fmt'..."
+
+({
+	cd "${CHIMERA_TOOL}/lib/fmt/"
+	export BUILD=static
+	[ -f 'Makefile' ] || run cmake .
+	[ -f 'libfmt.a' ] || run make
 })
 
 # ----------------------------------------------------------------------------------------------------------------------

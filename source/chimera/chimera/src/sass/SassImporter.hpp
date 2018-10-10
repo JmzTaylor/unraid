@@ -3,65 +3,55 @@
 // Unraid's most powerful hybrid theme manager.
 //
 // Tool: chimera
-// File: src/SassImporter.hpp
-//       The libsass importer for loading theme files.
+// File: src/sass/SassImporter.hpp
+//       An abstract class which wraps the sass importer API.
 // ---------------------------------------------------------------------------------------------------------------------
 #pragma once
 
+// Includes: Stdlib
 #include <string>
-#include <optional>
+#include <vector>
 
+// Includes: Library
 #include <sass.h>
-#include <sass/functions.h>
 
-namespace chimera {
+// Includes: Application
+#include "SassImportEntry.hpp"
+// ---------------------------------------------------------------------------------------------------------------------
+
+namespace chimera::sass {
 	class SassImporter {
 		protected:
 
+			// ----- API -----
 
+			/**
+			 * A virtual function for resolving imports from a path.
+			 *
+			 * @param parent The parent path.
+			 * @param path The requested path.
+			 *
+			 * @returns A vector of files to import.
+			 */
+			virtual void import(const std::string& path, const std::string& parent, std::vector<chimera::sass::SassImportEntry>& files) = 0;
+
+			// ----- Implementation -----
+
+			/**
+			 * A wrapper around the sass importer feature.
+			 * https://github.com/sass/libsass/blob/master/docs/api-importer.md
+			 */
+			static Sass_Import_List sass_importer(const char* path, Sass_Importer_Entry cb, struct Sass_Compiler* comp);
 
 		public:
 
-			// ----- Constructors -----
-
-			SassImporter(std::string& path);
-
-			// ----- Setters -----
+			// ----- API -----
 
 			/**
-			 * Sets the compiler option for minifying output CSS.
-			 * Minified output does not contain comments or unnecessary whitespace.
-			 *
-			 * @param minify Whether or not minification is enabled.
+			 * Creates a new libsass Sass_Importer_Entry object from this.
+			 * This object's lifetime must either be managed manually, or have its ownership given to libsass.
 			 */
-			void setOptionMinify(bool minify);
-
-			/**
-			 * Sets the compiler option for embedding sourcemaps.
-			 * @param sourcemaps Whether or not sourcemaps are enabled.
-			 */
-			bool setOptionSourcemaps(bool sourcemaps);
-
-			// ----- Getters -----
-
-			/**
-			 * Gets the compiler option for minifying output CSS.
-			 * Minified output does not contain comments or unnecessary whitespace.
-			 *
-			 * @return Whether or not minification is enabled.
-			 */
-			bool getOptionMinify() const;
-
-			/**
-			 * Gets the compiler option for embedding sourcemaps.
-			 * @return Whether or not sourcemaps are enabled.
-			 */
-			bool getOptionSourcemaps() const;
-
-			Sass_Import_List sass_importer(const char* path, Sass_Importer_Entry cb, struct Sass_Compiler* comp) {
-				SassImporter* self = static_cast<SassImporter*>(sass_importer_get_cookie(cb));
-
-			}
+			Sass_Importer_Entry newSass();
 
 	};
 }

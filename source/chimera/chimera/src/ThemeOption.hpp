@@ -8,11 +8,12 @@
 // ---------------------------------------------------------------------------------------------------------------------
 #pragma once
 
+// Includes: Stdlib
 #include <string>
 
+// Includes: Library
 #include <sass.h>
-
-
+// ---------------------------------------------------------------------------------------------------------------------
 namespace chimera {
 	class ThemeOption {
 		protected:
@@ -56,25 +57,30 @@ namespace chimera {
 			 * Gets the option's sass variable name.
 			 * @return The variable name.
 			 */
-			const &std::string getName() const;
+			const std::string& getName() const;
 
 			/**
 			 * Gets the option's default value.
 			 * @return The default value.
 			 */
-			const &std::string getDefault() const;
+			const std::string& getDefault() const;
 
 			/**
 			 * Gets the option's current value.
 			 * @return The current value.
 			 */
-			const &std::string getValue() const;
+			const std::string& getValue() const;
 
 			/**
 			 * Gets the option's sass variable type.
 			 * @return The variable type.
 			 */
-			Sass_Tag getType() cost;
+			Sass_Tag getType() const;
 
-	}
+			/**
+			 * Generates code for setting the option inside a SCSS file.
+			 */
+			const std::string toScss() const;
+
+	};
 }

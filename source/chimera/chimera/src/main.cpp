@@ -6,27 +6,33 @@
 // File: src/main.cpp
 //       The entry point for chimera.
 // ---------------------------------------------------------------------------------------------------------------------
+// Includes: Application
 #include "App.hpp"
 
-//
-//int main(int argc, char** argv) {
-//	chimera::App app(argc, argv);
-//
-//	// -----------------------
-//	// Argument: --help
-//	// -----------------------
-//	if (app.options->count("help")) {
-//		app.showHelp();
-//		return 0;
-//	}
-//
-//	// -----------------------
-//	// Argument: --version
-//	// -----------------------
-//	if (app.options->count("version")) {
-//		app.showVersion();
-//		return 0;
-//	}
-//
-//	return 0;
-//}
+// FIXME: Debug
+#include <iostream>
+#include <vector>
+// ---------------------------------------------------------------------------------------------------------------------
+// Main:
+
+int main(int argc, char** argv) {
+	chimera::App app(argc, argv);
+
+	// -----------------------
+	// Argument: --help
+	// -----------------------
+	if (app.options->count("help")) {
+		app.showHelp();
+		return 0;
+	}
+
+	// -----------------------
+	// Argument: --version
+	// -----------------------
+	if (app.options->count("version")) {
+		app.showVersion();
+		return 0;
+	}
+
+	return 0;
+}

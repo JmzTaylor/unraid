@@ -6,68 +6,54 @@
 // File: src/sass/SassImporter.hpp
 //       An abstract class which wraps the sass importer API.
 // ---------------------------------------------------------------------------------------------------------------------
-#pragma once
-
+// Includes: Stdlib
 #include <string>
-#include <optional>
+#include <vector>
 
+// Includes: Library
 #include <sass.h>
-#include <sass/functions.h>
 
-namespace chimera::sass {
-	class SassImporter {
-		protected:
+// Includes: Application
+#include "SassError.hpp"
+#include "SassImportEntry.hpp"
+#include "SassImporter.hpp"
 
+// Usings:
+using chimera::sass::SassError;
+using chimera::sass::SassImportEntry;
+using chimera::sass::SassImporter;
+using std::vector;
+// ---------------------------------------------------------------------------------------------------------------------
+// API:
 
-			// ----- API -----
+Sass_Importer_Entry SassImporter::newSass() {
+	return sass_make_importer(chimera::sass::SassImporter::sass_importer, 0, reinterpret_cast<void*>(this));
+}
 
-			/**
-			 * A virtual function for resolving imports from a path.
-			 *
-			 * @param parent The parent path.
-			 * @param path The requested path.
-			 *
-			 * @returns A vector of files to import.
-			 */
-			virtual void import(std::string path, std::string parent, std::vector<chimera::sass::SassImport>& files) = 0;
+// ---------------------------------------------------------------------------------------------------------------------
+// Integration:
 
-			// ----- Implementation -----
+Sass_Import_List SassImporter::sass_importer(const char* path, Sass_Importer_Entry cb, struct Sass_Compiler* comp) {
+	SassImporter* self = static_cast<SassImporter*>(sass_importer_get_cookie(cb));
+	vector<SassImportEntry> files;
 
-			/**
-			 * A wrapper around the sass importer feature.
-			 * https://github.com/sass/libsass/blob/master/docs/api-importer.md
-			 */
-			Sass_Import_List sass_importer(const char* path, Sass_Importer_Entry cb, struct Sass_Compiler* comp) {
-				SassImporter* self = static_cast<SassImporter*>(sass_importer_get_cookie(cb));
-				std::vector<chimera::sass::SassImport> files;
+	try {
+		self->import(path, "[TODO]", files);
 
-				try {
-					self->import(path, "TODO", files);
+		// Convert the vector to a sass import list.
+		Sass_Import_List list = sass_make_import_list(files.size());
 
-					// Convert the vector to a sass import list.
-					Sass_Import_List list = sass_make_import_list(files.size());
+		size_t i = 0;
+		for (const auto& file : files) {
+			list[i++] = file.newSass();
+		}
 
-					size_t i = 0;
-					for (const auto& file : files) {
-						list[i++] = file.toImportEntry();
-					}
-
-					return list;
-				} catch (chimera::sass::SassError& error) {
-					// Pass the message along to libsass.
-					Sass_Import_List list = sass_make_import_list(1);
-					list[0] = sass_make_import_entry(path, 0, 0);
-					sass_import_set_error(list[0], sass_copy_c_string(error.what().c_str()), 0, 0);
-					return list;
-				}
-			}
-
-		public:
-
-			// ----- Constructors -----
-
-			SassImporter();
-
-
-	};
+		return list;
+	} catch (SassError& error) {
+		// Pass the message along to libsass.
+		Sass_Import_List list = sass_make_import_list(1);
+		list[0] = sass_make_import_entry(path, 0, 0);
+		sass_import_set_error(list[0], sass_copy_c_string(error.what()), 0, 0);
+		return list;
+	}
 }

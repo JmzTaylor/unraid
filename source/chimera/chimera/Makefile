@@ -20,13 +20,16 @@ COMPILER_MACROS=
 LIB_HEADERS=lib/libsass/include \
             lib/libsemver/include \
             lib/cxxopts/include \
-            lib/json/include
+            lib/json/include \
+            lib/fmt/include
 
 LIB_PATHS=lib/libsass/lib \
-          lib/libsemver/src
+          lib/libsemver/src \
+          lib/fmt/
 
 LIB_FILES=sass \
-          semver
+          semver \
+          fmt \
 
 # ----------------------------------------------------------------------------------------------------------------------
 # Compiler:

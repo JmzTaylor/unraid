@@ -6,16 +6,18 @@
 // File: src/App.cpp
 //       The main application class for chimera.
 // ---------------------------------------------------------------------------------------------------------------------
+// Includes: Stdlib
 #include <iostream>
 #include <string>
 
+// Includes: Library
 #include <sass.h>
 
+// Includes: Application
 #include "App.hpp"
 #include "Compiler.hpp"
-#include "util/StringUtil.hpp" // FIXME: Debug
 // ---------------------------------------------------------------------------------------------------------------------
-// ----- Constructors / Destructors -----
+// Constructors / Destructors:
 
 chimera::App::App(int argc, char** argv) {
 	this->opts = new cxxopts::Options(argv[0], "The chimera sass compiler.");
@@ -47,14 +49,6 @@ chimera::App::App(int argc, char** argv) {
 
 	// Parse.
 	this->options = this->opts->parse_to_heap(argc, argv);
-
-	// FIXME: DEBUG START
-	std::string alpha = "foo/bar";
-	std::list<std::string> list = split<std::list>(alpha, "/");
-	std::cout << "First:  " << list.front() << std::endl;
-	std::string beta = join(list, "/");
-	std::cout << "Joined: " << beta << std::endl;
-	// FIXME: DEBUG END
 }
 
 chimera::App::~App() {
@@ -62,7 +56,8 @@ chimera::App::~App() {
 	delete this->opts;
 }
 
-// ----- Info Functions -----
+// ---------------------------------------------------------------------------------------------------------------------
+// Info Functions:
 
 void chimera::App::showHelp() const {
 	std::cout << this->opts->help({"info", "sass", "chimera compiler", "chimera theme"}) << std::endl;
@@ -77,7 +72,8 @@ void chimera::App::showVersion() const {
 		<< "GitLab:   " << URL_GITLAB << std::endl;
 }
 
-// ----- Getters -----
+// ---------------------------------------------------------------------------------------------------------------------
+// Getters:
 
 const std::string chimera::App::getVersion() const {
 	return std::string(APP_VERSION);

@@ -3,36 +3,112 @@
 // Unraid's most powerful hybrid theme manager.
 //
 // Tool: chimera
-// File: src/sass/SassError.hpp
-//       A class which wraps the Sass_Value error object.
+// File: src/util/PathUtil.hpp
+//       Various utility functions for working with unix paths.
 // ---------------------------------------------------------------------------------------------------------------------
 #pragma once
 
+// Includes: Stdlib
 #include <string>
-#include <stdexcept>
-
-#include <sass.h>
+#include <vector>
 // ---------------------------------------------------------------------------------------------------------------------
-namespace chimera::sass {
-	class SassError : public std::runtime_error {
-		public:
 
-			// ----- Constructors / Destructors -----
+namespace chimera::util {
+	class PathUtil {
+	public:
 
-			/**
-			 * Creates a libsass error.
-			 *
-			 * @param what The error message.
-			 */
-			SassError(const std::string& what);
+		// ----- Normalization -----
 
-			// ----- API -----
+		/**
+		 * Normalizes a path without resolving any links.
+		 *
+		 * @param path The path to normalize.
+		 * @returns The normalized path.
+		 */
+		static std::string normalize(const std::string& path);
 
-			/**
-			 * Creates a new libsass Sass_Value object from this.
-			 * This object's lifetime must either be managed manually, or have its ownership given to libsass.
-			 */
-			union Sass_Value* newSass();
+
+		// ----- Working Directory ------
+
+		/**
+		 * Gets the working directory of the current process.
+		 * @returns The working directory.
+		 *
+		 * @throws std::ios_base::failure
+		 */
+		static std::string workdir();
+
+		/**
+		 * Changes the working directory of the current process.
+		 * @param directory The new working directory.
+		 *
+		 * @throws chimera::except::DetailedError
+		 */
+		static void chdir(const std::string& directory);
+
+		// ----- Expansion -----
+
+		/**
+		 * Uses glob(3) to expand a path.
+		 *
+		 * @param pattern The pattern to expand.
+		 *
+		 * @returns A vector of matching files.
+		 *
+		 * @throws chimera::except::DetailedError
+		 */
+		static std::vector<std::string> expand(const std::string& pattern);
+
+		/**
+		 * Uses glob(3) to expand a path.
+		 *
+		 * @param pattern The pattern to expand.
+		 * @param directory The relative directory.
+		 *
+		 * @returns A vector of matching files.
+		 *
+		 * @throws chimera::except::DetailedError
+		 */
+		static std::vector<std::string> expand(const std::string& pattern, const std::string& directory);
+
+		/**
+		 * Uses glob(3) to expand a path.
+		 *
+		 * @param pattern The pattern to expand.
+		 * @param directory The relative directory.
+		 * @param glob_flags Additional flags to pass to glob(3).
+		 *
+		 * @returns A vector of matching files.
+		 *
+		 * @throws chimera::except::DetailedError
+		 */
+		static std::vector<std::string> expand(const std::string& pattern, const std::string& directory, int glob_flags);
+
+		/**
+		 * Uses wordexp(3) to expand a path.
+		 *
+		 * @param pattern The pattern to expand.
+		 *
+		 * @returns A vector of matching files.
+		 *
+		 * @throws chimera::except::DetailedError
+		 */
+		static std::vector<std::string> expand_shell(const std::string& pattern);
+
+		/**
+		 * Uses wordexp(3) to expand a path.
+		 *
+		 * FIXME: Doesn't filter out failed matches properly.
+		 *        Try "\\$TEST". It should return an empty vector, but it doesn't.
+		 *
+		 * @param pattern The pattern to expand.
+		 * @param directory The relative directory.
+		 *
+		 * @returns A vector of matching files.
+		 *
+		 * @throws chimera::except::DetailedError
+		 */
+		static std::vector<std::string> expand_shell(const std::string& pattern, const std::string& directory);
 
 	};
 }
