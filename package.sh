@@ -25,6 +25,7 @@
 # Polyfill: realpath
 
 [ -z "$(type -t realpath)" ] && realpath() {
+	if [ "$1" = "--" ]; then shift; fi
 	python -c "import os,sys; print os.path.realpath(sys.argv[1])" "$1"
 }
 
@@ -148,6 +149,27 @@ else
 		fi
 	}
 fi
+
+# ----------------------------------------------------------------------------------------------------------------------
+# Function: apply_patch
+
+# Applies a patch using git.
+# $1: [File] The repo directory path.
+# $2: [File] The patch file.
+apply_patch() {
+	local repo="$1"
+	local patches="${@:2}"
+	({
+		cd "$repo"
+		files=()
+		while read -r file; do
+			files+=("$file")
+		done < <(cat "${patches[@]}" | grep '^+++ ' | sed 's/+++ [^/]*\///')
+
+		run git checkout head -- "${files[@]}"
+		run git apply "${patches[@]}"
+	})
+}
 
 # ----------------------------------------------------------------------------------------------------------------------
 # Function: create_plugin_package

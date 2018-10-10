@@ -1,0 +1,15 @@
+[submodule "source/chimera/chimera/lib/cxxopts"]
+	path = source/chimera/chimera/lib/cxxopts/repo
+	url = https://github.com/jarro2783/cxxopts.git
+[submodule "source/chimera/chimera/lib/fmt"]
+	path = source/chimera/chimera/lib/fmt/repo
+	url = https://github.com/fmtlib/fmt.git
+[submodule "source/chimera/chimera/lib/json"]
+	path = source/chimera/chimera/lib/json/repo
+	url = https://github.com/nlohmann/json.git
+[submodule "source/chimera/chimera/lib/sass"]
+	path = source/chimera/chimera/lib/sass/repo
+	url = https://github.com/sass/libsass.git
+[submodule "source/chimera/chimera/lib/semver"]
+	path = source/chimera/chimera/lib/semver/repo
+	url = https://github.com/zmarko/semver.git

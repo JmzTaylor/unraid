@@ -15,23 +15,6 @@ COMPILER_WARN=-Wall -Werror -Wno-unused-command-line-argument -Wfatal-errors
 COMPILER_MACROS=
 
 # ----------------------------------------------------------------------------------------------------------------------
-# Libraries:
-
-LIB_HEADERS=lib/libsass/include \
-            lib/libsemver/include \
-            lib/cxxopts/include \
-            lib/json/include \
-            lib/fmt/include
-
-LIB_PATHS=lib/libsass/lib \
-          lib/libsemver/src \
-          lib/fmt/
-
-LIB_FILES=sass \
-          semver \
-          fmt \
-
-# ----------------------------------------------------------------------------------------------------------------------
 # Compiler:
 
 CXX=g++
