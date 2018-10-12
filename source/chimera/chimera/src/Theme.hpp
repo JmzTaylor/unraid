@@ -23,7 +23,7 @@ namespace chimera {
 		protected:
 
 			const std::string name;
-			std::map<std::string, ThemeOption> options;
+			std::map<std::string, chimera::ThemeOption> options;
 			bool supported;
 
 		public:

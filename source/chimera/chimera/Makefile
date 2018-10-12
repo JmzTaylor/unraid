@@ -11,7 +11,7 @@
 
 COMPILER_O=
 COMPILER_STD=-std=c++17
-COMPILER_WARN=-Wall -Werror -Wno-unused-command-line-argument -Wfatal-errors
+COMPILER_WARN=-Wall -Werror -Wno-unused-command-line-argument -Wfatal-errors -Wno-non-virtual-dtor
 COMPILER_MACROS=
 
 # ----------------------------------------------------------------------------------------------------------------------

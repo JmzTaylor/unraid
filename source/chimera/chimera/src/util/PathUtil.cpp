@@ -113,9 +113,18 @@ vector<string> PathUtil::expand_shell(const string& pattern) {
 	return PathUtil::expand_shell(pattern, PathUtil::workdir());
 }
 
+void PathUtil::expand_shell(const string& pattern, vector<string>& results) {
+	PathUtil::expand_shell(pattern, PathUtil::workdir(), results);
+}
+
 vector<string> PathUtil::expand_shell(const string& pattern, const string& directory) {
+	vector<string> results;
+	PathUtil::expand_shell(pattern, directory, results);
+	return results;
+}
+
+void PathUtil::expand_shell(const string& pattern, const string& directory, vector<string>& results) {
 	string cwd = PathUtil::workdir();
-	vector<string> result;
 	wordexp_t exp;
 
 	// Change directory and run wordexp.
@@ -152,13 +161,12 @@ vector<string> PathUtil::expand_shell(const string& pattern, const string& direc
 	// Fill vector.
 	if (strcmp(exp.we_wordv[0], pattern.c_str()) != 0) {
 		for (size_t i = 0; i < exp.we_wordc; i++) {
-			result.push_back(string(exp.we_wordv[i]));
+			results.push_back(string(exp.we_wordv[i]));
 		}
 	}
 
-	// Cleanup and return.
+	// Cleanup.
 	wordfree(&exp);
-	return result;
 }
 
 // ---------------------------------------------------------------------------------------------------------------------
@@ -168,13 +176,26 @@ vector<string> PathUtil::expand(const string& pattern) {
 	return PathUtil::expand(pattern, PathUtil::workdir(), 0);
 }
 
+void PathUtil::expand(const string& pattern, vector<string>& results) {
+	PathUtil::expand(pattern, PathUtil::workdir(), 0, results);
+}
+
 vector<string> PathUtil::expand(const string& pattern, const string& directory) {
 	return PathUtil::expand(pattern, directory, 0);
 }
 
+void PathUtil::expand(const string& pattern, const string& directory, vector<string>& results) {
+	PathUtil::expand(pattern, directory, 0, results);
+}
+
 vector<string> PathUtil::expand(const string& pattern, const string& directory, int glob_flags) {
+	vector<string> results;
+	PathUtil::expand(pattern, directory, glob_flags, results);
+	return results;
+}
+
+void PathUtil::expand(const string& pattern, const string& directory, int glob_flags, vector<string>& results) {
 	string cwd = PathUtil::workdir();
-	vector<string> result;
 	glob_t exp;
 
 	// Change directory and run wordexp.
@@ -210,12 +231,11 @@ vector<string> PathUtil::expand(const string& pattern, const string& directory, 
 
 	// Fill vector.
 	for (size_t i = 0; i < exp.gl_pathc; i++) {
-		result.push_back(string(exp.gl_pathv[i]));
+		results.push_back(string(exp.gl_pathv[i]));
 	}
 
 	// Cleanup and return.
 	finish:
 
 		globfree(&exp);
-		return result;
 }

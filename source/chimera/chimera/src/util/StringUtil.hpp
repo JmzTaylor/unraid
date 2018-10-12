@@ -18,6 +18,31 @@ namespace chimera::util {
 	class StringUtil {
 	public:
 
+		// ----- Comparison Functions -----
+
+		/**
+		 * Checks to see if a string has a specific prefix.
+		 *
+		 * @param str The string to check.
+		 * @param prefix The prefix to look for.
+		 *
+		 * @return True if the prefix matched.
+		 */
+		static bool starts_with(const std::string& str, const std::string prefix);
+
+		/**
+		 * Checks to see if a string has a specific suffix.
+		 *
+		 * @param str The string to check.
+		 * @param suffix The suffix to look for.
+		 *
+		 * @return True if the suffix matched.
+		 */
+		static bool ends_with(const std::string& str, const std::string suffix);
+
+
+		// ----- Split/Join -----
+
 		/**
 		 * Splits a string into a list or vector.
 		 *

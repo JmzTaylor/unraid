@@ -11,37 +11,47 @@
 #include <string>
 
 // Includes: Library
+#include <fmt/format.h>
 #include <sass.h>
 
 // Includes: Application
 #include "App.hpp"
 #include "Compiler.hpp"
+
+// Usings:
+using chimera::App;
+using std::cout;
+using std::string;
+using std::vector;
 // ---------------------------------------------------------------------------------------------------------------------
 // Constructors / Destructors:
 
-chimera::App::App(int argc, char** argv) {
+App::App(int argc, char** argv) {
 	this->opts = new cxxopts::Options(argv[0], "The chimera sass compiler.");
 
 	// Informational Options:
 	this->opts->add_options("info")
-		("help",    "Show help information.",    cxxopts::value<bool>())
-		("version", "Show version information.", cxxopts::value<bool>());
+		("help",    "Show help information.",                                   cxxopts::value<bool>())
+		("version", "Show version information.",                                cxxopts::value<bool>())
+		("show-theme-options",   "Show the options available in the theme.",    cxxopts::value<bool>())
+		("show-theme-supported", "Show whether or not the theme is supported.", cxxopts::value<bool>());
 
 	// Sass/SCSS Options:
 	this->opts->add_options("sass")
-		("o,output",    "Specify the output file.",            cxxopts::value<std::string>())
+		("o,output",    "Specify the output file.",            cxxopts::value<string>())
 		("m,minify",    "Minify the output.",                  cxxopts::value<bool>())
 		("s,sourcemap", "Include a sourcemap in the output.",  cxxopts::value<bool>());
 
 	// Chimera Options:
 	this->opts->add_options("chimera compiler")
-		("unraid-version",  "Set the Unraid version variable.",         cxxopts::value<std::string>())
-		("unraid-theme",    "Set the Unraid theme variable.",           cxxopts::value<std::string>())
-		("var",             "Set a SASS variable in key:value format.", cxxopts::value<std::vector<std::string>>());
+		("unraid-version",  "Set the Unraid version variable.",         cxxopts::value<string>())
+		("unraid-theme",    "Set the Unraid theme variable.",           cxxopts::value<string>())
+		("var",             "Set a SASS variable in key:value format.", cxxopts::value<vector<string>>());
 
 	this->opts->add_options("chimera theme")
-		("show-theme-options",   "Show the options available in the theme.",    cxxopts::value<std::string>())
-		("show-theme-supported", "Show whether or not the theme is supported.", cxxopts::value<bool>());
+		("theme",           "Specify the theme directory.",          cxxopts::value<string>())
+		("theme-file",      "Specify the theme file.",               cxxopts::value<string>()->default_value("theme.scss"))
+		("theme-resources", "Specify the theme resource directory.", cxxopts::value<string>());
 
 	// Automation:
 	this->opts->add_options("automation")
@@ -51,7 +61,7 @@ chimera::App::App(int argc, char** argv) {
 	this->options = this->opts->parse_to_heap(argc, argv);
 }
 
-chimera::App::~App() {
+App::~App() {
 	delete this->options;
 	delete this->opts;
 }
@@ -59,22 +69,20 @@ chimera::App::~App() {
 // ---------------------------------------------------------------------------------------------------------------------
 // Info Functions:
 
-void chimera::App::showHelp() const {
+void App::showHelp() const {
 	std::cout << this->opts->help({"info", "sass", "chimera compiler", "chimera theme"}) << std::endl;
 }
 
-void chimera::App::showVersion() const {
-	std::cout
-		<< "chimera " << this->getVersion() << " (libsass " << libsass_version() << ")" << std::endl
-		<< std::endl
-		<< "Licenses: " << URL_LICENSES << std::endl
-		<< "GitHub:   " << URL_GITHUB << std::endl
-		<< "GitLab:   " << URL_GITLAB << std::endl;
+void App::showVersion() const {
+	cout << fmt::format("{} {} (libsass {})\n\n", "chimera", this->getVersion(), libsass_version())
+		<< fmt::format("Licenses: {}\n", URL_LICENSES)
+		<< fmt::format("GitHub:   {}\n", URL_GITHUB)
+		<< fmt::format("GitLab:   {}\n", URL_GITLAB);
 }
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Getters:
 
-const std::string chimera::App::getVersion() const {
-	return std::string(APP_VERSION);
+const string App::getVersion() const {
+	return string(APP_VERSION);
 }

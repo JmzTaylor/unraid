@@ -63,6 +63,16 @@ namespace chimera::util {
 		 * Uses glob(3) to expand a path.
 		 *
 		 * @param pattern The pattern to expand.
+		 * @param results The vector to place the results into.
+		 *
+		 * @throws chimera::except::DetailedError
+		 */
+		static void expand(const std::string& pattern, std::vector<std::string>& results);
+
+		/**
+		 * Uses glob(3) to expand a path.
+		 *
+		 * @param pattern The pattern to expand.
 		 * @param directory The relative directory.
 		 *
 		 * @returns A vector of matching files.
@@ -70,6 +80,17 @@ namespace chimera::util {
 		 * @throws chimera::except::DetailedError
 		 */
 		static std::vector<std::string> expand(const std::string& pattern, const std::string& directory);
+
+		/**
+		 * Uses glob(3) to expand a path.
+		 *
+		 * @param pattern The pattern to expand.
+		 * @param directory The relative directory.
+		 * @param results The vector to place the results into.
+		 *
+		 * @throws chimera::except::DetailedError
+		 */
+		static void expand(const std::string& pattern, const std::string& directory, std::vector<std::string>& results);
 
 		/**
 		 * Uses glob(3) to expand a path.
@@ -85,6 +106,18 @@ namespace chimera::util {
 		static std::vector<std::string> expand(const std::string& pattern, const std::string& directory, int glob_flags);
 
 		/**
+		 * Uses glob(3) to expand a path.
+		 *
+		 * @param pattern The pattern to expand.
+		 * @param directory The relative directory.
+		 * @param glob_flags Additional flags to pass to glob(3).
+		 * @param results The vector to place the results into.
+		 *
+		 * @throws chimera::except::DetailedError
+		 */
+		static void expand(const std::string& pattern, const std::string& directory, int glob_flags, std::vector<std::string>& results);
+
+		/**
 		 * Uses wordexp(3) to expand a path.
 		 *
 		 * @param pattern The pattern to expand.
@@ -98,8 +131,15 @@ namespace chimera::util {
 		/**
 		 * Uses wordexp(3) to expand a path.
 		 *
-		 * FIXME: Doesn't filter out failed matches properly.
-		 *        Try "\\$TEST". It should return an empty vector, but it doesn't.
+		 * @param pattern The pattern to expand.
+		 * @param results The vector to place the results into.
+		 *
+		 * @throws chimera::except::DetailedError
+		 */
+		static void expand_shell(const std::string& pattern, std::vector<std::string>& results);
+
+		/**
+		 * Uses wordexp(3) to expand a path.
 		 *
 		 * @param pattern The pattern to expand.
 		 * @param directory The relative directory.
@@ -109,6 +149,20 @@ namespace chimera::util {
 		 * @throws chimera::except::DetailedError
 		 */
 		static std::vector<std::string> expand_shell(const std::string& pattern, const std::string& directory);
+
+		/**
+		 * Uses wordexp(3) to expand a path.
+		 *
+		 * FIXME: Doesn't filter out failed matches properly.
+		 *        Try "\\$TEST". It should return an empty vector, but it doesn't.
+		 *
+		 * @param pattern The pattern to expand.
+		 * @param directory The relative directory.
+		 * @param results The vector to place the results into.
+		 *
+		 * @throws chimera::except::DetailedError
+		 */
+		static void expand_shell(const std::string& pattern, const std::string& directory, std::vector<std::string>& results);
 
 	};
 }
