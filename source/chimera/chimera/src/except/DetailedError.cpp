@@ -23,22 +23,22 @@ using std::string;
 // ---------------------------------------------------------------------------------------------------------------------
 // Constructors / Destructors:
 
-DetailedError::DetailedError(const string& what) : std::runtime_error(what), theDetails({}) {
+DetailedError::DetailedError(const string& what) : std::runtime_error(what), details_({}) {
 }
 
-DetailedError::DetailedError(const string& what, const std::map<std::string, std::string>& details) : std::runtime_error(what), theDetails(details) {
+DetailedError::DetailedError(const string& what, const std::map<std::string, std::string>& details) : std::runtime_error(what), details_(details) {
 }
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Getters:
 
 const std::map<std::string, std::string>& DetailedError::details() const {
-	return this->theDetails;
+	return this->details_;
 }
 
-const std::optional<std::string> DetailedError::whatFunction() const {
-	if (this->theDetails.count("function")) {
-		return {this->theDetails.at("function")};
+const std::optional<std::string> DetailedError::what_function() const {
+	if (this->details_.count("function")) {
+		return {this->details_.at("function")};
 	}
 
 	return {};

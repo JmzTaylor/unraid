@@ -69,12 +69,12 @@ App::~App() {
 // ---------------------------------------------------------------------------------------------------------------------
 // Info Functions:
 
-void App::showHelp() const {
+void App::ShowHelp() const {
 	std::cout << this->opts->help({"info", "sass", "chimera compiler", "chimera theme"}) << std::endl;
 }
 
-void App::showVersion() const {
-	cout << fmt::format("{} {} (libsass {})\n\n", "chimera", this->getVersion(), libsass_version())
+void App::ShowVersion() const {
+	cout << fmt::format("{} {} (libsass {})\n\n", "chimera", this->version(), libsass_version())
 		<< fmt::format("Licenses: {}\n", URL_LICENSES)
 		<< fmt::format("GitHub:   {}\n", URL_GITHUB)
 		<< fmt::format("GitLab:   {}\n", URL_GITLAB);
@@ -83,6 +83,6 @@ void App::showVersion() const {
 // ---------------------------------------------------------------------------------------------------------------------
 // Getters:
 
-const string App::getVersion() const {
+const string App::version() const {
 	return string(APP_VERSION);
 }

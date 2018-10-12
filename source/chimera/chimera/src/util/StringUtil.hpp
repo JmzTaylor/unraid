@@ -28,7 +28,7 @@ namespace chimera::util {
 		 *
 		 * @return True if the prefix matched.
 		 */
-		static bool starts_with(const std::string& str, const std::string prefix);
+		static bool StartsWith(const std::string& str, const std::string prefix);
 
 		/**
 		 * Checks to see if a string has a specific suffix.
@@ -38,7 +38,7 @@ namespace chimera::util {
 		 *
 		 * @return True if the suffix matched.
 		 */
-		static bool ends_with(const std::string& str, const std::string suffix);
+		static bool EndsWith(const std::string& str, const std::string suffix);
 
 
 		// ----- Split/Join -----
@@ -52,7 +52,7 @@ namespace chimera::util {
 		 * @returns The string as a number of items in a list.
 		 */
 		template <template <class, class> class C>
-		static C<std::string, std::allocator<std::string> > split(const std::string& str, const std::string& delimiter);
+		static C<std::string, std::allocator<std::string> > Split(const std::string& str, const std::string& delimiter);
 
 		/**
 		 * Joins a list or vector into a string.
@@ -63,7 +63,7 @@ namespace chimera::util {
 		 * @returns The joined strings.
 		 */
 		template <template <class, class> class C>
-		static std::string join(C<std::string, std::allocator<std::string> >& items, const std::string& delimiter);
+		static std::string Join(C<std::string, std::allocator<std::string> >& items, const std::string& delimiter);
 
 	};
 }
@@ -72,7 +72,7 @@ namespace chimera::util {
 // Templates, Yay...
 
 template <template <class, class> class C>
-C<std::string, std::allocator<std::string>> chimera::util::StringUtil::split(const std::string& str, const std::string& delimiter) {
+C<std::string, std::allocator<std::string>> chimera::util::StringUtil::Split(const std::string& str, const std::string& delimiter) {
 	const size_t delimiter_length = delimiter.length();
 
 	C<std::string, std::allocator<std::string>> components;
@@ -94,7 +94,7 @@ C<std::string, std::allocator<std::string>> chimera::util::StringUtil::split(con
 
 
 template <template <class, class> class C>
-std::string chimera::util::StringUtil::join(C<std::string, std::allocator<std::string>>& items, const std::string& delimiter) {
+std::string chimera::util::StringUtil::Join(C<std::string, std::allocator<std::string>>& items, const std::string& delimiter) {
 	// Calculate length.
 	size_t length = 0;
 	for (auto& item : items) {
@@ -102,18 +102,18 @@ std::string chimera::util::StringUtil::join(C<std::string, std::allocator<std::s
 	}
 
 	// Create string object.
-	std::string str;
-	str.reserve(length);
+	std::string buffer;
+	buffer.reserve(length);
 
 	// Append string object.
 	for (auto& item : items) {
-		if (str.empty()) {
-			str.append(item);
+		if (buffer.empty()) {
+			buffer.append(item);
 		} else {
-			str.append(delimiter);
-			str.append(item);
+			buffer.append(delimiter);
+			buffer.append(item);
 		}
 	}
 
-	return str;
+	return buffer;
 }

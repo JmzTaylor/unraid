@@ -33,7 +33,7 @@ namespace chimera::sass {
 			 *
 			 * @returns A vector of files to import.
 			 */
-			virtual void import(const std::string& path, const std::string& parent, std::vector<chimera::sass::SassImportEntry>& files) = 0;
+			virtual void Import(const std::string& path, const std::string& parent, std::vector<chimera::sass::SassImportEntry>& files) = 0;
 
 			// ----- Implementation -----
 
@@ -41,9 +41,14 @@ namespace chimera::sass {
 			 * A wrapper around the sass importer feature.
 			 * https://github.com/sass/libsass/blob/master/docs/api-importer.md
 			 */
-			static Sass_Import_List sass_importer(const char* path, Sass_Importer_Entry cb, struct Sass_Compiler* comp);
+			static Sass_Import_List Importer(const char* path, Sass_Importer_Entry cb, struct Sass_Compiler* compiler);
 
 		public:
+
+			// ----- Constructors / Destructor -----
+
+			virtual ~SassImporter() = default;
+
 
 			// ----- API -----
 
@@ -51,7 +56,8 @@ namespace chimera::sass {
 			 * Creates a new libsass Sass_Importer_Entry object from this.
 			 * This object's lifetime must either be managed manually, or have its ownership given to libsass.
 			 */
-			Sass_Importer_Entry newSass();
+			Sass_Importer_Entry NewSass();
+
 
 	};
 }

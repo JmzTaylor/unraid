@@ -19,7 +19,7 @@ namespace chimera::except {
 	class DetailedError : public std::runtime_error {
 		protected:
 
-			const std::map<std::string, std::string> theDetails;
+			const std::map<std::string, std::string> details_;
 
 		public:
 
@@ -47,7 +47,7 @@ namespace chimera::except {
 			 * Gets the name of the function that caused the error.
 			 * @return The function name.
 			 */
-			const std::optional<std::string> whatFunction() const;
+			const std::optional<std::string> what_function() const;
 
 			/**
 			 * Gets additional details.

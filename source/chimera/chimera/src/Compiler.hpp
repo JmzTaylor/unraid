@@ -24,9 +24,9 @@ namespace chimera {
 	class Compiler {
 		protected:
 
-			std::optional<struct Sass_Options*> options;
-			std::optional<struct Sass_Data_Context*> data_context;
-			const chimera::Theme& theme;
+			std::optional<struct Sass_Options*> options_;
+			std::optional<struct Sass_Data_Context*> context_;
+			const chimera::Theme& theme_;
 
 
 		public:
@@ -43,13 +43,13 @@ namespace chimera {
 			 *
 			 * @param minify Whether or not minification is enabled.
 			 */
-			void setOptionMinify(bool minify);
+			void set_option_minify(bool minify);
 
 			/**
 			 * Sets the compiler option for embedding sourcemaps.
 			 * @param sourcemaps Whether or not sourcemaps are enabled.
 			 */
-			bool setOptionSourcemaps(bool sourcemaps);
+			bool set_option_sourcemaps(bool sourcemaps);
 
 			// ----- Getters -----
 
@@ -59,13 +59,13 @@ namespace chimera {
 			 *
 			 * @return Whether or not minification is enabled.
 			 */
-			bool getOptionMinify() const;
+			bool option_minify() const;
 
 			/**
 			 * Gets the compiler option for embedding sourcemaps.
 			 * @return Whether or not sourcemaps are enabled.
 			 */
-			bool getOptionSourcemaps() const;
+			bool option_sourcemaps() const;
 
 
 

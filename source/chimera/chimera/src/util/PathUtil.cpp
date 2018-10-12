@@ -38,9 +38,9 @@ using std::string;
 using std::vector;
 // ---------------------------------------------------------------------------------------------------------------------
 // Normalization:
-using std::runtime_error;
-string PathUtil::normalize(const string& path) {
-	list<string> components = StringUtil::split<list>(path, "/");
+
+string PathUtil::Normalize(const string& path) {
+	list<string> components = StringUtil::Split<list>(path, "/");
 
 	// Normalize path components.
 	for (auto it = components.begin(); it != components.end(); ++it) {
@@ -61,13 +61,13 @@ string PathUtil::normalize(const string& path) {
 	}
 
 	// Rebuild path from components.
-	return StringUtil::join<list>(components, "/");
+	return StringUtil::Join<list>(components, "/");
 }
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Working Directory:
 
-string PathUtil::workdir() {
+string PathUtil::Workdir() {
 	size_t buffer_size = 4096;
 	char* buffer = new char[buffer_size];
 
@@ -96,8 +96,8 @@ string PathUtil::workdir() {
 	return result;
 }
 
-void PathUtil::chdir(const string& directory) {
-	int status = ::chdir(directory.c_str());
+void PathUtil::ChangeWorkdir(const string& directory) {
+	int status = chdir(directory.c_str());
 	if (status != 0) {
 		throw DetailedError(strerror(errno), {
 			{"function", "chdir()"},
@@ -109,28 +109,28 @@ void PathUtil::chdir(const string& directory) {
 // ---------------------------------------------------------------------------------------------------------------------
 // Expansion: wordexp(3)
 
-vector<string> PathUtil::expand_shell(const string& pattern) {
-	return PathUtil::expand_shell(pattern, PathUtil::workdir());
+vector<string> PathUtil::ExpandShell(const string& pattern) {
+	return PathUtil::ExpandShell(pattern, PathUtil::Workdir());
 }
 
-void PathUtil::expand_shell(const string& pattern, vector<string>& results) {
-	PathUtil::expand_shell(pattern, PathUtil::workdir(), results);
+void PathUtil::ExpandShell(const string& pattern, vector<string>& results) {
+	PathUtil::ExpandShell(pattern, PathUtil::Workdir(), results);
 }
 
-vector<string> PathUtil::expand_shell(const string& pattern, const string& directory) {
+vector<string> PathUtil::ExpandShell(const string& pattern, const string& directory) {
 	vector<string> results;
-	PathUtil::expand_shell(pattern, directory, results);
+	PathUtil::ExpandShell(pattern, directory, results);
 	return results;
 }
 
-void PathUtil::expand_shell(const string& pattern, const string& directory, vector<string>& results) {
-	string cwd = PathUtil::workdir();
+void PathUtil::ExpandShell(const string& pattern, const string& directory, vector<string>& results) {
+	string cwd = PathUtil::Workdir();
 	wordexp_t exp;
 
 	// Change directory and run wordexp.
-	PathUtil::chdir(directory);
+	PathUtil::ChangeWorkdir(directory);
 	int status = wordexp(pattern.c_str(), &exp, WRDE_NOCMD);
-	PathUtil::chdir(cwd);
+	PathUtil::ChangeWorkdir(cwd);
 
 	// Handle status.
 	switch (status) {
@@ -172,36 +172,36 @@ void PathUtil::expand_shell(const string& pattern, const string& directory, vect
 // ---------------------------------------------------------------------------------------------------------------------
 // Expansion: glob(3)
 
-vector<string> PathUtil::expand(const string& pattern) {
-	return PathUtil::expand(pattern, PathUtil::workdir(), 0);
+vector<string> PathUtil::Expand(const string& pattern) {
+	return PathUtil::Expand(pattern, PathUtil::Workdir(), 0);
 }
 
-void PathUtil::expand(const string& pattern, vector<string>& results) {
-	PathUtil::expand(pattern, PathUtil::workdir(), 0, results);
+void PathUtil::Expand(const string& pattern, vector<string>& results) {
+	PathUtil::Expand(pattern, PathUtil::Workdir(), 0, results);
 }
 
-vector<string> PathUtil::expand(const string& pattern, const string& directory) {
-	return PathUtil::expand(pattern, directory, 0);
+vector<string> PathUtil::Expand(const string& pattern, const string& directory) {
+	return PathUtil::Expand(pattern, directory, 0);
 }
 
-void PathUtil::expand(const string& pattern, const string& directory, vector<string>& results) {
-	PathUtil::expand(pattern, directory, 0, results);
+void PathUtil::Expand(const string& pattern, const string& directory, vector<string>& results) {
+	PathUtil::Expand(pattern, directory, 0, results);
 }
 
-vector<string> PathUtil::expand(const string& pattern, const string& directory, int glob_flags) {
+vector<string> PathUtil::Expand(const string& pattern, const string& directory, int glob_flags) {
 	vector<string> results;
-	PathUtil::expand(pattern, directory, glob_flags, results);
+	PathUtil::Expand(pattern, directory, glob_flags, results);
 	return results;
 }
 
-void PathUtil::expand(const string& pattern, const string& directory, int glob_flags, vector<string>& results) {
-	string cwd = PathUtil::workdir();
+void PathUtil::Expand(const string& pattern, const string& directory, int glob_flags, vector<string>& results) {
+	string cwd = PathUtil::Workdir();
 	glob_t exp;
 
 	// Change directory and run wordexp.
-	PathUtil::chdir(directory);
+	PathUtil::ChangeWorkdir(directory);
 	int status = glob(pattern.c_str(), GLOB_ERR | glob_flags, NULL, &exp);
-	PathUtil::chdir(cwd);
+	PathUtil::ChangeWorkdir(cwd);
 
 	// Handle status.
 	switch (status) {

@@ -31,7 +31,7 @@ namespace chimera {
 			 *
 			 * @return The Unraid version.
 			 */
-			const std::string& getVersion() const;
+			const std::string& version() const;
 
 			/**
 			 * Gets the active Dynamix theme.
@@ -39,7 +39,7 @@ namespace chimera {
 			 *
 			 * @return The active Dynamix theme.
 			 */
-			const std::string& getDynamixTheme();
+			const std::string& dynamix_theme();
 
 			/**
 			 * Gets the Dynamix theme directory.
@@ -47,7 +47,7 @@ namespace chimera {
 			 *
 			 * @return The Dynamix theme directory.
 			 */
-			const std::string& getDynamixThemeDirectory() const;
+			const std::string& dynamix_theme_directory() const;
 
 			/**
 			 * Gets a list of Dynamix themes.
@@ -55,7 +55,7 @@ namespace chimera {
 			 *
 			 * @return A list of available Dynamix themes.
 			 */
-			const std::vector<std::string>& getDynamixThemeList() const;
+			const std::vector<std::string>& dynamix_theme_list() const;
 
 
 	};

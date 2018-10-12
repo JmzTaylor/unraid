@@ -18,7 +18,7 @@ int main(int argc, char** argv) {
 	// Argument: --help
 	// -----------------------
 	if (app.options->count("help")) {
-		app.showHelp();
+		app.ShowHelp();
 		return 0;
 	}
 
@@ -26,7 +26,7 @@ int main(int argc, char** argv) {
 	// Argument: --version
 	// -----------------------
 	if (app.options->count("version")) {
-		app.showVersion();
+		app.ShowVersion();
 		return 0;
 	}
 

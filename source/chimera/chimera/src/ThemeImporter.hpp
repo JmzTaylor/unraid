@@ -19,14 +19,21 @@ namespace chimera {
 
 			const Theme& theme;
 
-			// ----- Overrides -----
-			void import(const std::string& path, const std::string& parent, std::vector<chimera::sass::SassImportEntry>& files) override;
+			// ----- Override: SassImporter -----
+			void Import(const std::string& path, const std::string& parent, std::vector<chimera::sass::SassImportEntry>& files) override;
 
 		public:
 
-			// ----- Constructors / Destructors -----
+			// ----- Constructors / Destructor -----
 
+			/**
+			 * Creates a new importer.
+			 *
+			 * @param theme The theme object.
+			 */
 			ThemeImporter(const Theme& theme);
+
+			virtual ~ThemeImporter() = default;
 
 	};
 }

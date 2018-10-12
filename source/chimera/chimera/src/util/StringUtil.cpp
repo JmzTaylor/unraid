@@ -18,11 +18,11 @@ using std::string;
 // ---------------------------------------------------------------------------------------------------------------------
 // Comparision Functions:
 
-bool StringUtil::starts_with(const std::string& str, const std::string prefix) {
+bool StringUtil::StartsWith(const std::string& str, const std::string prefix) {
 	return str.compare(0, prefix.length(), prefix) == 0;
 }
 
-bool StringUtil::ends_with(const std::string& str, const std::string suffix) {
+bool StringUtil::EndsWith(const std::string& str, const std::string suffix) {
 	size_t str_length    = str.length();
 	size_t suffix_length = suffix.length();
 

@@ -28,6 +28,6 @@ SassError::SassError(const string& what) : std::runtime_error(what) {
 // ---------------------------------------------------------------------------------------------------------------------
 // API:
 
-union Sass_Value* SassError::newSass() const {
+union Sass_Value* SassError::NewSass() const {
 	return sass_make_error(sass_copy_c_string(this->what()));
 }

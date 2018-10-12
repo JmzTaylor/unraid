@@ -21,8 +21,8 @@ namespace chimera::sass {
 	class SassImportEntry {
 		protected:
 
-			const std::string& file;
-			std::optional<std::string> contents;
+			const std::string& file_;
+			std::optional<std::string> contents_;
 
 		public:
 
@@ -60,13 +60,13 @@ namespace chimera::sass {
 			 * Gets the path of the imported file.
 			 * @return The path of the imported file.
 			 */
-			const std::string& getFile() const;
+			const std::string& file() const;
 
 			/**
 			 * Gets the contents of the imported file.
 			 * @return The file contents, or nothing if the file is to be loaded by liblass.
 			 */
-			const std::optional<const std::string> getContents() const;
+			const std::optional<const std::string> contents() const;
 
 
 			// ----- API -----
@@ -75,7 +75,7 @@ namespace chimera::sass {
 			 * Creates a new libsass Sass_Import_Entry object from this.
 			 * This object's lifetime must either be managed manually, or have its ownership given to libsass.
 			 */
-			Sass_Import_Entry newSass() const;
+			Sass_Import_Entry NewSass() const;
 
 	};
 }

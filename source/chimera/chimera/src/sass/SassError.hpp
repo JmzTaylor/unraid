@@ -35,7 +35,7 @@ namespace chimera::sass {
 			 * Creates a new libsass Sass_Value object from this.
 			 * This object's lifetime must either be managed manually, or have its ownership given to libsass.
 			 */
-			union Sass_Value* newSass() const;
+			union Sass_Value* NewSass() const;
 
 	};
 }

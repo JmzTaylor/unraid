@@ -25,7 +25,7 @@ namespace chimera::util {
 		 * @param path The path to normalize.
 		 * @returns The normalized path.
 		 */
-		static std::string normalize(const std::string& path);
+		static std::string Normalize(const std::string& path);
 
 
 		// ----- Working Directory ------
@@ -36,7 +36,7 @@ namespace chimera::util {
 		 *
 		 * @throws std::ios_base::failure
 		 */
-		static std::string workdir();
+		static std::string Workdir();
 
 		/**
 		 * Changes the working directory of the current process.
@@ -44,7 +44,7 @@ namespace chimera::util {
 		 *
 		 * @throws chimera::except::DetailedError
 		 */
-		static void chdir(const std::string& directory);
+		static void ChangeWorkdir(const std::string& directory);
 
 		// ----- Expansion -----
 
@@ -57,7 +57,7 @@ namespace chimera::util {
 		 *
 		 * @throws chimera::except::DetailedError
 		 */
-		static std::vector<std::string> expand(const std::string& pattern);
+		static std::vector<std::string> Expand(const std::string& pattern);
 
 		/**
 		 * Uses glob(3) to expand a path.
@@ -67,7 +67,7 @@ namespace chimera::util {
 		 *
 		 * @throws chimera::except::DetailedError
 		 */
-		static void expand(const std::string& pattern, std::vector<std::string>& results);
+		static void Expand(const std::string& pattern, std::vector<std::string>& results);
 
 		/**
 		 * Uses glob(3) to expand a path.
@@ -79,7 +79,7 @@ namespace chimera::util {
 		 *
 		 * @throws chimera::except::DetailedError
 		 */
-		static std::vector<std::string> expand(const std::string& pattern, const std::string& directory);
+		static std::vector<std::string> Expand(const std::string& pattern, const std::string& directory);
 
 		/**
 		 * Uses glob(3) to expand a path.
@@ -90,7 +90,7 @@ namespace chimera::util {
 		 *
 		 * @throws chimera::except::DetailedError
 		 */
-		static void expand(const std::string& pattern, const std::string& directory, std::vector<std::string>& results);
+		static void Expand(const std::string& pattern, const std::string& directory, std::vector<std::string>& results);
 
 		/**
 		 * Uses glob(3) to expand a path.
@@ -103,7 +103,7 @@ namespace chimera::util {
 		 *
 		 * @throws chimera::except::DetailedError
 		 */
-		static std::vector<std::string> expand(const std::string& pattern, const std::string& directory, int glob_flags);
+		static std::vector<std::string> Expand(const std::string& pattern, const std::string& directory, int glob_flags);
 
 		/**
 		 * Uses glob(3) to expand a path.
@@ -115,7 +115,7 @@ namespace chimera::util {
 		 *
 		 * @throws chimera::except::DetailedError
 		 */
-		static void expand(const std::string& pattern, const std::string& directory, int glob_flags, std::vector<std::string>& results);
+		static void Expand(const std::string& pattern, const std::string& directory, int glob_flags, std::vector<std::string>& results);
 
 		/**
 		 * Uses wordexp(3) to expand a path.
@@ -126,7 +126,7 @@ namespace chimera::util {
 		 *
 		 * @throws chimera::except::DetailedError
 		 */
-		static std::vector<std::string> expand_shell(const std::string& pattern);
+		static std::vector<std::string> ExpandShell(const std::string& pattern);
 
 		/**
 		 * Uses wordexp(3) to expand a path.
@@ -136,7 +136,7 @@ namespace chimera::util {
 		 *
 		 * @throws chimera::except::DetailedError
 		 */
-		static void expand_shell(const std::string& pattern, std::vector<std::string>& results);
+		static void ExpandShell(const std::string& pattern, std::vector<std::string>& results);
 
 		/**
 		 * Uses wordexp(3) to expand a path.
@@ -148,7 +148,7 @@ namespace chimera::util {
 		 *
 		 * @throws chimera::except::DetailedError
 		 */
-		static std::vector<std::string> expand_shell(const std::string& pattern, const std::string& directory);
+		static std::vector<std::string> ExpandShell(const std::string& pattern, const std::string& directory);
 
 		/**
 		 * Uses wordexp(3) to expand a path.
@@ -162,7 +162,7 @@ namespace chimera::util {
 		 *
 		 * @throws chimera::except::DetailedError
 		 */
-		static void expand_shell(const std::string& pattern, const std::string& directory, std::vector<std::string>& results);
+		static void ExpandShell(const std::string& pattern, const std::string& directory, std::vector<std::string>& results);
 
 	};
 }

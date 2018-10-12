@@ -53,12 +53,12 @@ namespace chimera {
 			/**
 			 * Show command help.
 			 */
-			void showHelp() const;
+			void ShowHelp() const;
 
 			/**
 			 * Show the command version.
 			 */
-			void showVersion() const;
+			void ShowVersion() const;
 
 			// ----- Getters -----
 
@@ -66,7 +66,7 @@ namespace chimera {
 			 * Gets the Chimera version.
 			 * @return The version string.
 			 */
-			const std::string getVersion() const;
+			const std::string version() const;
 
 			/**
 			 * Gets the Unraid info and settings object.
@@ -74,7 +74,7 @@ namespace chimera {
 			 *
 			 * @return The Unraid info and settings object.
 			 */
-			Unraid& getUnraid();
+			Unraid& unraid();
 
 	};
 }

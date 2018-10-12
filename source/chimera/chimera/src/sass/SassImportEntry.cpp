@@ -25,36 +25,36 @@ using std::string;
 // ---------------------------------------------------------------------------------------------------------------------
 // Constructors / Destructors:
 
-SassImportEntry::SassImportEntry(const string& file) : file(file) {
-	this->contents = std::nullopt;
+SassImportEntry::SassImportEntry(const string& file) : file_(file) {
+	this->contents_ = {};
 }
 
-SassImportEntry::SassImportEntry(const string& file, const string& contents) : file(file) {
-	this->contents = std::make_optional(contents);
+SassImportEntry::SassImportEntry(const string& file, const string& contents) : file_(file) {
+	this->contents_ = contents;
 }
 
-SassImportEntry::SassImportEntry(const string& file, istream& stream) : file(file) {
-	this->contents = std::make_optional(string(std::istreambuf_iterator<char>(stream), {}));
+SassImportEntry::SassImportEntry(const string& file, istream& stream) : file_(file) {
+	this->contents_ = string(std::istreambuf_iterator<char>(stream), {});
 }
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Getters:
 
-const string& SassImportEntry::getFile() const {
-	return this->file;
+const string& SassImportEntry::file() const {
+	return this->file_;
 }
 
-const optional<const string> SassImportEntry::getContents() const {
-	return this->contents;
+const optional<const string> SassImportEntry::contents() const {
+	return this->contents_;
 }
 
 // ---------------------------------------------------------------------------------------------------------------------
 // API:
 
-Sass_Import_Entry SassImportEntry::newSass() const {
+Sass_Import_Entry SassImportEntry::NewSass() const {
 	return sass_make_import_entry(
-		sass_copy_c_string(this->file.c_str()),
-		this->contents ? sass_copy_c_string(this->contents->c_str()) : 0,
+		sass_copy_c_string(this->file_.c_str()),
+		this->contents_ ? sass_copy_c_string(this->contents_->c_str()) : 0,
 		0
 	);
 }
