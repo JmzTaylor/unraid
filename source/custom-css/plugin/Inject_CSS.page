@@ -7,4 +7,4 @@ Link="nav-user"
  */
 ?>
 
-<link rel="stylesheet" href="/plugins/eth-p.unraid.custom-css/include/style.php" />
+<script src="/plugins/eth-p.unraid.custom-css/include/style.php"></script>

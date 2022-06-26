@@ -4,9 +4,9 @@
  */
 
 $PLUGIN     = explode('/', $_SERVER['PHP_SELF'])[2];
-$STYLESHEET = '/boot/config/plugins/' . $PLUGIN . '/custom.css';
+$STYLESHEET = '/boot/config/plugins/' . $PLUGIN . '/custom.js';
 
-header('Content-Type: text/css');
+header('Content-Type: text/javascript');
 
 if (file_exists($STYLESHEET)) {
 	$fh = fopen($STYLESHEET, 'r');
