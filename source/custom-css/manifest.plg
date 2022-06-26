@@ -4,7 +4,7 @@
 <!ENTITY name      "eth-p.unraid.custom-css">
 <!ENTITY author    "eth-p">
 <!ENTITY version   "2018.09.25">
-<!ENTITY pluginURL "https://raw.githubusercontent.com/eth-p/unraid/master/release/&name;.plg">
+<!ENTITY pluginURL "https://raw.githubusercontent.com/JmzTaylor/unraid/master/release/&name;.plg">
 <!ENTITY source    "/boot/config/plugins/&name;/&name;">
 <!ENTITY MD5       "--[REPLACE ME]--">
 ]>
@@ -36,7 +36,7 @@ fi
 
 <!-- SOURCE PACKAGE -->
 <FILE Name="&source;.txz" Run="upgradepkg --install-new --reinstall">
-<URL>https://github.com/eth-p/unraid/blob/master/release/&name;.txz?raw=true</URL>
+<URL>https://github.com/JmzTaylor/unraid/blob/master/release/&name;.txz?raw=true</URL>
 <MD5>&MD5;</MD5>
 </FILE>
 
